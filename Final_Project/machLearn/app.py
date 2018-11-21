@@ -86,6 +86,8 @@ def linear(field):
         filename = 'census_crime_data.csv'
     else:
         filename = 'census_crime_data_cleaned.csv'
+
+    filename = 'austin_census_crime_data_cleaned.csv'        
     print('in app linear loop#', filename)
 
 ############################
@@ -154,7 +156,8 @@ def linear(field):
 def R2():
     """process LSD."""
    
-    filename = 'census_crime_data_cleaned.csv'
+   # filename = 'census_crime_data_cleaned.csv'
+    filename = 'austin_census_crime_data_cleaned.csv'
     print('in app r2', filename)
 
 ############################
@@ -210,6 +213,58 @@ def R2():
     
     return jsonify(data)
 
+####classifier#######################################
+@app.route("/classifer")
+def classifer():
+    """process LSD."""
+   
+    filename = 'austin_census_crime_data_cleaned.csv'        
+    print('in app clssifier loop#', filename)
+
+    df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+
+    X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
+    y = df["crime_rating"]
+    print(X.shape, y.shape)
+ 
+    from sklearn.model_selection import train_test_split
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, stratify=y)
+
+    from sklearn.linear_model import LogisticRegression
+    classifier = LogisticRegression()
+    #classifier
+
+    classifier.fit(X_train, y_train)
+
+    print(f"Training Data Score: {classifier.score(X_train, y_train)}")
+    print(f"Testing Data Score: {classifier.score(X_test, y_test)}")
+
+    
+   
+    
+    training_score = classifier.score(X_train, y_train)
+    testing_score = classifier.score(X_test, y_test)
+
+    predictions = classifier.predict(X_test)
+
+    print(f"First 10 Predictions:   {predictions[:10]}")
+    print(f"First 10 Actual labels: {y_test[:10].tolist()}")
+
+ 
+  
+###########################
+    data = {
+        "training_score": training_score ,
+        "testing_score": testing_score,
+         "predictions": predictions.tolist(),
+         "actuals": y_test.tolist()
+     
+    }
+    
+    return jsonify(data)
+
+##################################
 
 
 @app.route('/favicon.ico')
