@@ -266,6 +266,104 @@ def classifer():
 
 ##################################
 
+###neural######################
+@app.route("/neural")
+def neural():
+    """process neural."""
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+
+    print('in app neural loop#')
+
+    filename = 'austin_census_crime_data_cleaned.csv'        
+    print('in app neural loop#', filename)
+
+    census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+
+
+    max_num = census['crime_rate'].max()
+    min_num = census['crime_rate'].min()
+    print(max_num)
+    print(min_num)
+
+    for index, row in census.iterrows():
+        if(row['crime_rating'] == "High"):
+            blah = 2
+        elif(row['crime_rating'] == 'Medium'):
+            blah = 1
+        else:
+            blah = 0
+        census.at[index, 'encode'] = blah
+
+    X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
+    y = census["encode"].values.reshape(-1, 1)
+    print(X.shape)
+    print(y.shape)
+
+
+
+    from sklearn.model_selection import train_test_split
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4)
+
+    from sklearn.preprocessing import StandardScaler
+
+    X_scaler = StandardScaler().fit(X_train)
+
+    X_train_scaled = X_scaler.transform(X_train)
+    X_test_scaled = X_scaler.transform(X_test)
+    print(X_train_scaled.shape)
+    print(X_test_scaled.shape)
+
+    from keras.models import Sequential
+
+    model = Sequential()
+
+    from keras.layers import Dense
+    number_inputs = 4
+    number_hidden_nodes = 8
+    model.add(Dense(units=number_hidden_nodes,
+                    activation='relu', input_dim=number_inputs))
+
+    number_classes = 3
+    model.add(Dense(units=number_classes, activation='softmax'))                   
+
+    model.compile(optimizer='adam',
+              loss='mean_squared_error',
+              metrics=['accuracy'])
+
+    # Fit (train) the model
+    model.fit(
+        X_train_scaled,
+        y_train_categorical,
+        epochs=1000,
+        shuffle=True,
+        verbose=2
+    )
+
+    # Evaluate the model using the testing data
+    model_loss, model_accuracy = model.evaluate(
+        X_test_scaled, y_test_categorical, verbose=2)
+    print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
+
+    ################################################################################
+
+   
+###########################
+    data = {
+        "model_loss": model_loss,
+        "model_accuracy": model_accuracy
+        # ,
+        #  "predictions": predictions.tolist(),
+        #  "actuals": y_test.tolist()
+     
+    }
+    
+    return jsonify(data)
+
+
+
 
 @app.route('/favicon.ico')
 def favicon():

@@ -1,3 +1,88 @@
+function processNeural(i) {
+
+    console.log('in processNeural: ');
+    var tbody = d3.select("tbody");
+    tbody.selectAll("*").remove();
+  
+
+    d3.json(`/neural`).then(function(data) {
+        console.log('in processNeural: data ', data);
+
+        // for (var l = 0; l < data.fieldArray.length; l++){
+        
+        //     // Append one table row `tr` to the table body
+        //     var row = tbody.append("tr");
+                
+        //     // Append one cell for the student name
+        //     row.append("td").text(data.fieldArray[l]);
+            
+        //     // Append one cell for the student grade
+        //     row.append("td").text(data.field_score[l]);
+        // }   
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("OverallScore");
+        // row.append("td").text(data.overall_score);
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("TrainingScore");
+        // row.append("td").text(data.training_score);
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("TestingScore");
+        // row.append("td").text(data.testing_score);
+
+
+
+    });    
+
+}
+
+
+
+
+function processClassifier(i) {
+
+    console.log('in processClassifier: ');
+    var tbody = d3.select("tbody");
+    tbody.selectAll("*").remove();
+  
+
+    d3.json(`/classifer`).then(function(data) {
+        console.log('in processClassifier: data ', data);
+
+        // for (var l = 0; l < data.fieldArray.length; l++){
+        
+        //     // Append one table row `tr` to the table body
+        //     var row = tbody.append("tr");
+                
+        //     // Append one cell for the student name
+        //     row.append("td").text(data.fieldArray[l]);
+            
+        //     // Append one cell for the student grade
+        //     row.append("td").text(data.field_score[l]);
+        // }   
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("OverallScore");
+        // row.append("td").text(data.overall_score);
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("TrainingScore");
+        // row.append("td").text(data.training_score);
+
+        // var row = tbody.append("tr");
+        // row.append("td").text("TestingScore");
+        // row.append("td").text(data.testing_score);
+
+
+
+    });    
+
+}
+
+
+
 function processR2(i) {
 
     console.log('in processR2: ');
@@ -224,8 +309,15 @@ function optionChanged(model) {
         case "R2_Scores":
             processR2(7);
             break;    
+        case "Classifier":
+            processClassifier(8);
+            break;    
+        case "Neural":
+            processNeural(8);
+            break;    
        
-    }
+ 
+        }
 
 
 
@@ -280,6 +372,14 @@ function init() {
         .append("option")
         .text('R2_Scores')
         .property("value", 'R2_Scores');
+    selector
+        .append("option")
+        .text('Classifier')
+        .property("value", 'Classifier');
+    selector
+        .append("option")
+        .text('Neural')
+        .property("value", 'Neural');
 
 }  
 
