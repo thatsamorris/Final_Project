@@ -8,6 +8,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# CKR - for database stuff
+import sqlalchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine, func
+
+from flask_sqlalchemy import SQLAlchemy
+
+import json
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'Uploads'
