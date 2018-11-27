@@ -1,8 +1,18 @@
+function clearThings() {
+    d3.select("div").html("");
+}
+
+
 function processNeural(i) {
 
     console.log('in processNeural: ');
-    var tbody = d3.select("tbody");
-    tbody.selectAll("*").remove();
+    var title = d3.select("h2").html("");
+    title.html("Neural Network Analysis")
+    var table = d3.select("table");
+    var head = table.select("thead").html("");
+    var row = head.append("tr");
+    row.append("th").text("Field");
+    row.append("th").text("Description");
   
 
     d3.json(`/neural`).then(function(data) {
@@ -86,9 +96,32 @@ function processClassifier(i) {
 function processR2(i) {
 
     console.log('in processR2: ');
+    var title = d3.select("h2");
+    title.html("R2 Score Analysis")
+    var table = d3.select("table");
+    var head = table.select("thead").html("");
+    var row = head.append("tr");
+    row.append("th").text("Field");
+    row.append("th").text("R2 Score");
+
     var tbody = d3.select("tbody");
-    tbody.selectAll("*").remove();
-  
+    // tbody.selectAll("*").remove();
+
+    var list = d3.select("ul");
+    var list_item = list.append("li");
+    list_item.text("All variables were used in initial scores and analysis to see how each variable affects crime rates");
+    var list_item = list.append("li");
+    list_item.text("Final Variables Used:");
+    var minorlist = list_item.append("ul"); 
+    minorlist.append("li").text("Median Age");
+    minorlist.append("li").text("Houselhold Income");
+    minorlist.append("li").text("Per Capita Income");
+    minorlist.append("li").text("Poverty Rate");
+    var list_item = list.append("li");
+    list_item.text("Overall score uses all data with 4 variables listed");
+    var list_item = list.append("li");
+    list_item.text("Testing and Training Scores used 80/20 model");
+
 
     d3.json(`/R2`).then(function(data) {
         console.log('in processR2: data ', data);
@@ -106,19 +139,16 @@ function processR2(i) {
         }   
 
         var row = tbody.append("tr");
-        row.append("td").text("OverallScore");
+        row.append("td").text("Overall Score");
         row.append("td").text(data.overall_score);
 
         var row = tbody.append("tr");
-        row.append("td").text("TrainingScore");
+        row.append("td").text("Training Score");
         row.append("td").text(data.training_score);
 
         var row = tbody.append("tr");
-        row.append("td").text("TestingScore");
+        row.append("td").text("Testing Score");
         row.append("td").text(data.testing_score);
-
-
-
     });    
 
 }

@@ -36,24 +36,27 @@
     <select id="selDataset" onchange="optionChanged(this.value)" style="
     background-color: #004da1;
     color: #fffbfb;"></select>
+    <div class="container">
+        <div id='graph1'></div>
+        <div id='graph2'></div>
+        <div id='graph3'></div>
+        <div id='graph4'></div>
 
-    <div id='graph1'></div>
-    <div id='graph2'></div>
-    <div id='graph3'></div>
-    <div id='graph4'></div>
-
-    <div class="col-md-12">
-      <table id="venTbl" class="table">
-        <thead>
-          <tr>
-            <th>Field </th>
-            <th>Score </th>
-            
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+        <div class="col-md-8">
+          <h2></h2>
+          <table id="venTbl" class="table">
+            <thead>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class = "col-md-4">
+          <ul>
+          </ul>
+        </div>
     </div>
+
+    <div id='neural network'>
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 

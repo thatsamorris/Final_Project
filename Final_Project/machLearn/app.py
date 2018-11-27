@@ -24,6 +24,7 @@ app.config['UPLOAD_FOLDER'] = 'Uploads'
 app.config['DATA_FOLDER'] = 'data'
 
 
+
 def procLSD(filename):
     print('we here!!')
     df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
@@ -97,24 +98,24 @@ def linear(field):
     else:
         filename = 'census_crime_data_cleaned.csv'
 
-    filename = 'austin_census_crime_data_cleaned.csv'        
+    filename = 'combined_cities_census.csv'        
     print('in app linear loop#', filename)
 
 ############################
     df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
     print(df)
     if (field == '0' or field == '4' ):
-        X = df['HouseholdIncome'].values.reshape(-1, 1)
-        chartName = 'HouseholdIncome'
+        X = df['Household Income'].values.reshape(-1, 1)
+        chartName = 'Household Income'
     elif (field == '1' or field == '5'):
-        X = df['MedianAge'].values.reshape(-1, 1)
-        chartName = 'MedianAge'
+        X = df['Median Age'].values.reshape(-1, 1)
+        chartName = 'Median Age'
     elif (field == '2' or field == '6'):
-        X = df['PovertyRate'].values.reshape(-1, 1)
-        chartName = 'PovertyRate'
+        X = df['Poverty Rate'].values.reshape(-1, 1)
+        chartName = 'Poverty Rate'
     else:
-        X = df['PerCapitaIncome'].values.reshape(-1, 1)
-        chartName = 'PerCapitaIncome'
+        X = df['Per Capita Income'].values.reshape(-1, 1)
+        chartName = 'Per Capita Income'
     
     y = df['crime_rate'].values.reshape(-1, 1)
 
@@ -167,13 +168,14 @@ def R2():
     """process LSD."""
    
    # filename = 'census_crime_data_cleaned.csv'
-    filename = 'austin_census_crime_data_cleaned.csv'
+    # filename = 'austin_census_crime_data_cleaned.csv'
+    filename = 'combined_cities_census.csv' 
     print('in app r2', filename)
 
 ############################
     census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
 
-    array = ["Population", "MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyCount", "PovertyRate"]
+    array = ["Population", "Median Age", "Household Income", "Per Capita Income", "Poverty Count", "Poverty Rate"]
 
     from sklearn.linear_model import LinearRegression
     model = LinearRegression()
@@ -189,7 +191,7 @@ def R2():
         score.append(model.score(X, y))
         
 
-    X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
+    X = census[["Median Age", "Household Income", "Per Capita Income", "Poverty Rate"]]
     y = census["crime_rate"].values.reshape(-1, 1)
 
     # Fitting our model with all of our features in X
@@ -228,7 +230,8 @@ def R2():
 def classifer():
     """process LSD."""
    
-    filename = 'austin_census_crime_data_cleaned.csv'        
+    # filename = 'austin_census_crime_data_cleaned.csv'
+    filename = 'combined_cities_census.csv'         
     print('in app clssifier loop#', filename)
 
     df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
@@ -284,18 +287,26 @@ def neural():
     import numpy as np
     import pandas as pd
 
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler
+
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.utils import to_categorical
+
     print('in app neural loop#')
 
-    filename = 'austin_census_crime_data_cleaned.csv'        
+    # filename = 'census_crime_data_cleaned.csv'        
+    filename = 'combined_cities_census.csv' 
     print('in app neural loop#', filename)
 
     census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
 
 
-    max_num = census['crime_rate'].max()
-    min_num = census['crime_rate'].min()
-    print(max_num)
-    print(min_num)
+    # max_num = census['crime_rate'].max()
+    # min_num = census['crime_rate'].min()
+    # print(max_num)
+    # print(min_num)
 
     for index, row in census.iterrows():
         if(row['crime_rating'] == "High"):
@@ -306,31 +317,25 @@ def neural():
             blah = 0
         census.at[index, 'encode'] = blah
 
-    X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
+    X = census[["Median Age", "Household Income", "Per Capita Income", "Poverty Rate"]]
     y = census["encode"].values.reshape(-1, 1)
-    print(X.shape)
-    print(y.shape)
-
-
-
-    from sklearn.model_selection import train_test_split
+    # print(X.shape)
+    # print(y.shape)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4)
-
-    from sklearn.preprocessing import StandardScaler
 
     X_scaler = StandardScaler().fit(X_train)
 
     X_train_scaled = X_scaler.transform(X_train)
     X_test_scaled = X_scaler.transform(X_test)
-    print(X_train_scaled.shape)
-    print(X_test_scaled.shape)
+    
+    # One-hot encoding
+    y_train_categorical = to_categorical(y_train)
+    y_test_categorical = to_categorical(y_test)
 
-    from keras.models import Sequential
-
+    
+    # start Keras modeling
     model = Sequential()
-
-    from keras.layers import Dense
     number_inputs = 4
     number_hidden_nodes = 8
     model.add(Dense(units=number_hidden_nodes,
@@ -364,10 +369,6 @@ def neural():
     data = {
         "model_loss": model_loss,
         "model_accuracy": model_accuracy
-        # ,
-        #  "predictions": predictions.tolist(),
-        #  "actuals": y_test.tolist()
-     
     }
     
     return jsonify(data)
