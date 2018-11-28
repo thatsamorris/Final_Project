@@ -26,6 +26,8 @@ function clearNotGraphs() {
     var tbody = table.select("tbody");
     tbody.selectAll("*").remove();
 
+    var title2 = d3.select(".col-md-4").select("h3").html("");
+
     var list = d3.select("ul");
     list.selectAll("*").remove();
 }
@@ -86,10 +88,10 @@ function processNeural(i) {
     row.append("th").text("Field");
     row.append("th").text("Description");
 
-    var tbody = table.select("tbody");
+    var title2 = d3.select(".col-md-4").select("h3");
+    title2.text("summary");
 
     var list = d3.select("ul");
-
     var list_item = list.append("li");
     list_item.text("Variable Used as Output For Model: Crime Encode");
     var list_item = list.append("li");
@@ -380,6 +382,14 @@ function processLinear(i) {
     
 }
 
+function prediction(){
+    // get input - type in city?
+    // look up zipcode ?
+    // import model
+    // print input variables
+    // print predicted result
+}
+
 
 function optionChanged(model) {
 
@@ -423,8 +433,10 @@ function optionChanged(model) {
             break;    
         case "Neural":
             processNeural(8);
-            break;    
-       
+            break;
+        case "Model Prediction":
+            prediction();
+            break; 
         }
 
 }
@@ -491,6 +503,10 @@ function init() {
         .append("option")
         .text('Neural')
         .property("value", 'Neural');
+    selector
+        .append("option")
+        .text('Prediction')
+        .property("value", 'Prediction');
 
 }  
 
