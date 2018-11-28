@@ -25,6 +25,39 @@ function clearThings() {
     list.selectAll("*").remove();
 }
 
+function processAgenda(){
+    clearThings();
+
+    var graph1 = d3.select('#graph1');
+    var list = graph1.append("ul");
+
+    var list_item = list.append("li").text("Team Members: Dave S., Austin M., Carmen R.,\
+        Gwen W., Christina J.");
+    var list_item = list.append("li").text("Agenda for Today");
+    var minor_list = list_item.append("ol");
+    minor_list.append("li").text("Background Information and Steps"); 
+    minor_list.append("li").text("Models Used and Results: Linear Regression"); 
+    minor_list.append("li").text("Prediction Based on Our Best Model "); 
+}
+
+function processBackground(){
+    clearThings();
+
+    var graph1 = d3.select('#graph1');
+    var list = graph1.append("ul");
+
+    var list_item = list.append("li").text("Cities Used for Analysis");
+    var minor_list = list_item.append("ul");
+    minor_list.append("li").text("Atlanta, GA"); 
+    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Baltimore, MD"); 
+    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Austin, TX"); 
+}
+
 
 function processNeural(i) {
 
@@ -38,17 +71,14 @@ function processNeural(i) {
     var table = d3.select("table");
     
     var head = table.select("thead");
-    // head.selectAll("*").remove();
 
     var row = head.append("tr");
     row.append("th").text("Field");
     row.append("th").text("Description");
 
     var tbody = table.select("tbody");
-    // tbody.selectAll("*").remove();
 
     var list = d3.select("ul");
-    list.selectAll("*").remove();
 
     var list_item = list.append("li");
     list_item.text("Variable Used as Output For Model: Crime Encode");
@@ -61,36 +91,20 @@ function processNeural(i) {
     minorlist.append("li").text("Poverty Rate");
     var list_item = list.append("li");
     list_item.text("Testing and Training Scores used 80/20 model");
+    var list_item = list.append("li");
+    list_item.text("Epochs Used: 1000");
   
 
     d3.json(`/neural`).then(function(data) {
-        console.log('in processNeural: data ', data);
+        console.log('in processNeural: data ', data); 
 
-        // for (var l = 0; l < data.fieldArray.length; l++){
-        
-        //     // Append one table row `tr` to the table body
-        //     var row = tbody.append("tr");
-                
-        //     // Append one cell for the student name
-        //     row.append("td").text(data.fieldArray[l]);
-            
-        //     // Append one cell for the student grade
-        //     row.append("td").text(data.field_score[l]);
-        // }   
+        var row = tbody.append("tr");
+        row.append("td").text("Model Accuracy");
+        row.append("td").text(data.model_accuracy);
 
-        // var row = tbody.append("tr");
-        // row.append("td").text("OverallScore");
-        // row.append("td").text(data.overall_score);
-
-        // var row = tbody.append("tr");
-        // row.append("td").text("TrainingScore");
-        // row.append("td").text(data.training_score);
-
-        // var row = tbody.append("tr");
-        // row.append("td").text("TestingScore");
-        // row.append("td").text(data.testing_score);
-
-
+        var row = tbody.append("tr");
+        row.append("td").text("Model Loss");
+        row.append("td").text(data.model_loss);
 
     });    
 
@@ -363,6 +377,9 @@ function optionChanged(model) {
 
     console.log('dis b da file: ', model);
     switch (model) {
+        case "Intro":
+            processAgenda();
+            break;
         case "Linear1":
             processLinear(0);
             break;
@@ -376,9 +393,6 @@ function optionChanged(model) {
             processLinear(3);
             break;
         case "Linear5":
-           console.log('linear5')
-            var graph1 = d3.select("graph1");
-            graph1.selectAll("*").remove();
             processLinear(4);
             break;
         case "Linear6":
@@ -400,10 +414,7 @@ function optionChanged(model) {
             processNeural(8);
             break;    
        
- 
         }
-
-
 
 }
 
@@ -413,12 +424,14 @@ function init() {
   // Grab a reference to the dropdown select element
   var selector = d3.select("#selDataset");
   console.log('in init');
-
-
     selector
         .append("option")
         .text('select')
         .property("value", 'test');
+    selector
+        .append("option")
+        .text('Intro')
+        .property("value", 'Intro');
     selector
         .append("option")
         .text('Linear1')
@@ -435,8 +448,7 @@ function init() {
         .append("option")
         .text('Linear4')
         .property("value", 'Linear4');
-
-        selector
+    selector
         .append("option")
         .text('Linear5')
         .property("value", 'Linear5');
