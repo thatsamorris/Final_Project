@@ -297,7 +297,7 @@ def neural():
     print('in app neural loop#')
 
     # filename = 'census_crime_data_cleaned.csv'        
-    filename = 'combined_cities_census.csv' 
+    filename = 'crime and census/combined_cleaned_encode.csv' 
     print('in app neural loop#', filename)
 
     census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
@@ -308,17 +308,17 @@ def neural():
     # print(max_num)
     # print(min_num)
 
-    for index, row in census.iterrows():
-        if(row['crime_rating'] == "High"):
-            blah = 2
-        elif(row['crime_rating'] == 'Medium'):
-            blah = 1
-        else:
-            blah = 0
-        census.at[index, 'encode'] = blah
+    # for index, row in census.iterrows():
+    #     if(row['crime_rating'] == "High"):
+    #         blah = 2
+    #     elif(row['crime_rating'] == 'Medium'):
+    #         blah = 1
+    #     else:
+    #         blah = 0
+    #     census.at[index, 'encode'] = blah
 
     X = census[["Median Age", "Household Income", "Per Capita Income", "Poverty Rate"]]
-    y = census["encode"].values.reshape(-1, 1)
+    y = census["crime encode"].values.reshape(-1, 1)
     # print(X.shape)
     # print(y.shape)
 
@@ -338,10 +338,10 @@ def neural():
     model = Sequential()
     number_inputs = 4
     number_hidden_nodes = 8
+    number_classes = 3
+
     model.add(Dense(units=number_hidden_nodes,
                     activation='relu', input_dim=number_inputs))
-
-    number_classes = 3
     model.add(Dense(units=number_classes, activation='softmax'))                   
 
     model.compile(optimizer='adam',

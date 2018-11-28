@@ -1,18 +1,66 @@
 function clearThings() {
-    d3.select("div").html("");
+
+    var title = d3.selectAll('div').select('h2').html("");
+
+    var graph1 = d3.select('#graph1');
+    graph1.selectAll("*").remove();
+
+    var graph2 = d3.select('#graph2');
+    graph2.selectAll("*").remove();
+
+    var graph3 = d3.select('#graph3');
+    graph3.selectAll("*").remove();
+
+    var graph4 = d3.select('#graph4');
+    graph4.selectAll("*").remove();
+
+    var table = d3.select("table");
+    var head = table.select("thead");
+    head.selectAll("*").remove();
+
+    var tbody = table.select("tbody");
+    tbody.selectAll("*").remove();
+
+    var list = d3.select("ul");
+    list.selectAll("*").remove();
 }
 
 
 function processNeural(i) {
 
+    clearThings();
+
     console.log('in processNeural: ');
-    var title = d3.select("h2").html("");
+    var title = d3.select("h2");
     title.html("Neural Network Analysis")
+
+    
     var table = d3.select("table");
-    var head = table.select("thead").html("");
+    
+    var head = table.select("thead");
+    // head.selectAll("*").remove();
+
     var row = head.append("tr");
     row.append("th").text("Field");
     row.append("th").text("Description");
+
+    var tbody = table.select("tbody");
+    // tbody.selectAll("*").remove();
+
+    var list = d3.select("ul");
+    list.selectAll("*").remove();
+
+    var list_item = list.append("li");
+    list_item.text("Variable Used as Output For Model: Crime Encode");
+    var list_item = list.append("li");
+    list_item.text("Variables Used as Inputs For Model:");
+    var minorlist = list_item.append("ul"); 
+    minorlist.append("li").text("Median Age");
+    minorlist.append("li").text("Houselhold Income");
+    minorlist.append("li").text("Per Capita Income");
+    minorlist.append("li").text("Poverty Rate");
+    var list_item = list.append("li");
+    list_item.text("Testing and Training Scores used 80/20 model");
   
 
     d3.json(`/neural`).then(function(data) {
@@ -95,11 +143,13 @@ function processClassifier(i) {
 
 function processR2(i) {
 
+    clearThings();
+
     console.log('in processR2: ');
     var title = d3.select("h2");
     title.html("R2 Score Analysis")
     var table = d3.select("table");
-    var head = table.select("thead").html("");
+    var head = table.select("thead");
     var row = head.append("tr");
     row.append("th").text("Field");
     row.append("th").text("R2 Score");
@@ -108,6 +158,8 @@ function processR2(i) {
     // tbody.selectAll("*").remove();
 
     var list = d3.select("ul");
+    // list.selectAll("*").remove();
+
     var list_item = list.append("li");
     list_item.text("All variables were used in initial scores and analysis to see how each variable affects crime rates");
     var list_item = list.append("li");
@@ -155,6 +207,8 @@ function processR2(i) {
 
 
 function processLinear(i) {
+
+    clearThings();
 
     console.log('in processLinear: ');
     var filename = 'census_crime_data.csv';
