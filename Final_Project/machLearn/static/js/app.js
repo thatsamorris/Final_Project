@@ -1,6 +1,6 @@
 function clearThings() {
 
-    var title = d3.selectAll('div').select('h2').html("");
+    clearNotGraphs();
 
     var graph1 = d3.select('#graph1');
     graph1.selectAll("*").remove();
@@ -13,6 +13,11 @@ function clearThings() {
 
     var graph4 = d3.select('#graph4');
     graph4.selectAll("*").remove();
+}
+
+function clearNotGraphs() {
+
+    var title = d3.selectAll('div').select('h2').html("");
 
     var table = d3.select("table");
     var head = table.select("thead");
@@ -33,7 +38,7 @@ function processAgenda(){
 
     var list_item = list.append("li").text("Team Members: Dave S., Austin M., Carmen R.,\
         Gwen W., Christina J.");
-    var list_item = list.append("li").text("Agenda for Today");
+    var list_item = list.append("li").text("Agenda for Today: ");
     var minor_list = list_item.append("ol");
     minor_list.append("li").text("Background Information and Steps"); 
     minor_list.append("li").text("Models Used and Results: Linear Regression"); 
@@ -45,17 +50,22 @@ function processBackground(){
 
     var graph1 = d3.select('#graph1');
     var list = graph1.append("ul");
-
-    var list_item = list.append("li").text("Cities Used for Analysis");
+    var list_item = list.append("li").text("Cities Used for Analysis: ");
     var minor_list = list_item.append("ul");
     minor_list.append("li").text("Atlanta, GA"); 
     minor_list.append("li").text("Austin, TX"); 
     minor_list.append("li").text("Baltimore, MD"); 
-    minor_list.append("li").text("Austin, TX"); 
-    minor_list.append("li").text("Austin, TX"); 
-    minor_list.append("li").text("Austin, TX"); 
-    minor_list.append("li").text("Austin, TX"); 
-    minor_list.append("li").text("Austin, TX"); 
+    minor_list.append("li").text("Detroit, MI"); 
+    minor_list.append("li").text("Kansas City, MO"); 
+    minor_list.append("li").text("Orlando, FL"); 
+    minor_list.append("li").text("Philadelphia, PA"); 
+    minor_list.append("li").text("Tucson, AZ");
+    var list_item = list.append("li").text("Not all police incident data had zipcode\
+        - most had latitude and logitude - used python library (uszipcode) to get zipcode"); 
+    var list_item = list.append("li").text("After data was cleaned up, it was combined\
+        with census data and then put into database."); 
+    var list_item = list.append("li").text("Models Used: Linear Regression, \
+        Neural Network, and SVM"); 
 }
 
 
@@ -222,14 +232,12 @@ function processR2(i) {
 
 function processLinear(i) {
 
-    clearThings();
+    clearNotGraphs();
 
     console.log('in processLinear: ');
     var filename = 'census_crime_data.csv';
     var graph_num = '';
     var class_name = "";
-
-    
 
         d3.json(`/linear/${String(i)}`).then(function(data) {
 
@@ -380,6 +388,9 @@ function optionChanged(model) {
         case "Intro":
             processAgenda();
             break;
+        case "Background":
+            processBackground();
+            break;
         case "Linear1":
             processLinear(0);
             break;
@@ -432,6 +443,10 @@ function init() {
         .append("option")
         .text('Intro')
         .property("value", 'Intro');
+    selector
+        .append("option")
+        .text('Background')
+        .property("value", 'Background');
     selector
         .append("option")
         .text('Linear1')
