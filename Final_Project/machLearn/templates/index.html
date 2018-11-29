@@ -28,15 +28,13 @@
 
 
  <body>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
 
     <select id="selDataset" onchange="optionChanged(this.value)" style="
     background-color: #004da1;
     color: #fffbfb;"></select>
     <div class="container">
+        <form></form>
+        
         <!-- for linear regression graphs -->
         <div id='graph1'></div>
         <div id='graph2'></div>
@@ -45,14 +43,14 @@
 
         <!-- for r2 summary and neural network tables -->
         <div class="col-md-8">
-          <h3></h3>
+          <h2></h2>
           <table id="venTbl" class="table">
             <thead></thead>
             <tbody></tbody>
           </table>
         </div>
         <div class = "col-md-4">
-          <h3></h3>
+          <h2></h2>
           <ul>
           </ul>
         </div>

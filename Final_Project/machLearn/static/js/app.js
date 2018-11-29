@@ -30,6 +30,10 @@ function clearNotGraphs() {
 
     var list = d3.select("ul");
     list.selectAll("*").remove();
+
+    var form = d3.select("form");
+    form.html("");
+    form.selectAll("*").remove();
 }
 
 function processAgenda(){
@@ -39,7 +43,7 @@ function processAgenda(){
     var list = graph1.append("ul");
 
     var list_item = list.append("li").text("Team Members: Dave S., Austin M., Carmen R.,\
-        Gwen W., Christina J.");
+        Gwen W.");
     var list_item = list.append("li").text("Agenda for Today: ");
     var minor_list = list_item.append("ol");
     minor_list.append("li").text("Background Information and Steps"); 
@@ -110,6 +114,7 @@ function processNeural(i) {
     d3.json(`/neural`).then(function(data) {
         console.log('in processNeural: data ', data); 
 
+        var tbody = table.select("tbody");
         var row = tbody.append("tr");
         row.append("td").text("Model Accuracy");
         row.append("td").text(data.model_accuracy);
@@ -173,7 +178,7 @@ function processR2(i) {
 
     console.log('in processR2: ');
     var title = d3.select("h2");
-    title.html("R2 Score Analysis")
+    title.html("Logistic Regression - Score Analysis")
     var table = d3.select("table");
     var head = table.select("thead");
     var row = head.append("tr");
@@ -237,7 +242,7 @@ function processLinear(i) {
     clearNotGraphs();
 
     console.log('in processLinear: ');
-    var filename = 'census_crime_data.csv';
+    // var filename = 'census_crime_data.csv';
     var graph_num = '';
     var class_name = "";
 
@@ -382,7 +387,50 @@ function processLinear(i) {
     
 }
 
+function myFunction(){
+    event.preventDefault();
+    var city = document.getElementById("myForm").elements.namedItem("cityInput").value;
+    var state = document.getElementById("myForm").elements.namedItem("stateInput").value;
+    console.log(city.concat(',', state));
+}
+
+
 function prediction(){
+    clearThings();
+
+    console.log("test test test");
+
+    var form = d3.select("form")
+        .attr('id', 'myForm')
+        .attr('onsubmit',"return myFunction();");
+    
+    form.html("<br> Input a City: <br>");
+    
+    var input = form.append("input")
+        .attr('type','text')
+        .attr('name','cityInput');
+
+    var nextline = form.append().html("<br>Input a State:<br>");
+
+    var input2 = nextline.append("input")
+        .attr('type','text')
+        .attr('name','stateInput');
+
+    var nextline = form.append().html("<br>");
+
+    var button = nextline.append("input")
+        .attr('type',"submit");
+
+    // console.log(myFunction());
+
+
+
+    // var form = d3.select("form")
+    // form.html("<br>");
+
+    // var submit = form.append("input")
+    //     .attr({type:"submit", value:"submit"});
+
     // get input - type in city?
     // look up zipcode ?
     // import model
@@ -434,7 +482,7 @@ function optionChanged(model) {
         case "Neural":
             processNeural(8);
             break;
-        case "Model Prediction":
+        case "Prediction":
             prediction();
             break; 
         }

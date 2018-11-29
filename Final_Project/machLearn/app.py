@@ -206,13 +206,13 @@ def R2():
 
     array = ["Population", "MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyCount", "PovertyRate"]
 
-    from sklearn.linear_model import LinearRegression
-    model = LinearRegression()
+    from sklearn.linear_model import LogisticRegression
+    model = LogisticRegression()
 
     score = []
     for variable in array:
         X = census[variable].values.reshape(-1, 1)
-        y = census["crime_rate"].values.reshape(-1, 1)
+        y = census["crime_rating"].values.reshape(-1, 1)
 
     # Fitting our model with all of our features in X
         model.fit(X, y)
@@ -221,7 +221,7 @@ def R2():
         
 
     X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
-    y = census["crime_rate"].values.reshape(-1, 1)
+    y = census["crime_rating"]
 
     # Fitting our model with all of our features in X
     model.fit(X, y)
@@ -271,7 +271,8 @@ def classifer():
 
 
 
-    X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
+    # X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
+    X = df[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
     y = df["crime_rating"]
     print(X.shape, y.shape)
  
@@ -360,7 +361,7 @@ def neural():
     # print(X.shape)
     # print(y.shape)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4, stratify=y)
 
     X_scaler = StandardScaler().fit(X_train)
 
