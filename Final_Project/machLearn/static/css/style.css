@@ -1,0 +1,25 @@
+head {
+    background-color: #3b3a30;
+}
+
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #061f26;
+  color: #d7d2c4;
+  font-family: impact;
+
+  
+}
+
+}
+
+#map,
+body,
+html {
+  height: 100%;
+  
+}
+
+
