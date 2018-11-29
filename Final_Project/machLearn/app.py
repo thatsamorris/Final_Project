@@ -191,8 +191,8 @@ def linear(field):
     return jsonify(data)
 
 ##################################
-@app.route("/R2")
-def R2():
+@app.route("/linearR2")
+def linearR2():
     """process LSD."""
    
    # filename = 'census_crime_data_cleaned.csv'
@@ -221,7 +221,7 @@ def R2():
         
 
     X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
-    y = census["crime_rate"].values.reshape(-1, 1)
+    y = census["crime_rate"]
 
     # Fitting our model with all of our features in X
     model.fit(X, y)
@@ -271,7 +271,8 @@ def classifer():
 
 
 
-    X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
+    # X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
+    X = df[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
     y = df["crime_rating"]
     print(X.shape, y.shape)
  
@@ -360,7 +361,7 @@ def neural():
     # print(X.shape)
     # print(y.shape)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4, stratify=y)
 
     X_scaler = StandardScaler().fit(X_train)
 
@@ -375,7 +376,7 @@ def neural():
     # start Keras modeling
     model = Sequential()
     number_inputs = 4
-    number_hidden_nodes = 8
+    number_hidden_nodes = 100
     number_classes = 3
 
     model.add(Dense(units=number_hidden_nodes,
@@ -390,7 +391,7 @@ def neural():
     model.fit(
         X_train_scaled,
         y_train_categorical,
-        epochs=1000,
+        epochs=750,
         shuffle=True,
         verbose=2
     )
@@ -411,7 +412,60 @@ def neural():
     
     return jsonify(data)
 
+@app.route('/citystate/<field>')
+def citystate(field):
 
+    # stmt = db.session.query(City_zip).statement
+    # df_census = pd.read_sql_query(stmt, db.session.bind)
+
+    from uszipcode import SearchEngine
+    search = SearchEngine(simple_zipcode=True)
+    print(field)
+    city = field.split('-')[0]
+    state = field.split('-')[1]
+    res = search.by_city_and_state(city,state)
+    total = len(res)
+    lat = res[0].lat
+    lng = res[0].lng
+
+    print(lat)
+
+    if total < 5:
+        count = total
+    else:
+        count = 5
+
+    data = {"total_results": count}
+    zipArry = []
+
+    for x in range(count):
+        zipthing = {}
+        item = res[x]
+        zipthing['zipcode'] = item.zipcode
+        zipthing['bounds_west'] = item.bounds_west
+        zipthing['bounds_east'] = item.bounds_east
+        zipthing['bounds_north'] = item.bounds_north
+        zipthing['bounds_south'] = item.bounds_south
+        zipArry.append(zipthing)
+
+    df_test = pd.DataFrame({'Zipcode': zipArry})
+
+    # merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
+
+    # print(merge_table)
+    print(df_test)
+
+    ###########################
+    data = {
+        "latitude": lat,
+        "longitude": lng,
+        "total_results": count,
+        # "zipcode": merge_table.Zipcode.tolist()
+        "zipcode": zipArry
+
+    }
+
+    return jsonify(data)
 
 
 @app.route('/favicon.ico')
