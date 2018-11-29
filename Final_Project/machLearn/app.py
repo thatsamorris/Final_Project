@@ -1,25 +1,45 @@
-# Example adapted from http://flask.pocoo.org/docs/0.12/patterns/fileuploads/
-# @NOTE: The code below is for educational purposes only.
-# Consider using the more secure version at the link above for production apps
 import os
+import sqlalchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+from sqlalchemy import func
+
 from flask import Flask, request, render_template, send_from_directory, jsonify
+from flask import Flask, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# CKR - for database stuff
-import sqlalchemy
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
+from sqlalchemy.ext.declarative import declarative_base
+Base1 = declarative_base()
 
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, Float
+
+###
 
 import json
 
 
 app = Flask(__name__)
+
+###djs 
+#app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/Project2.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/crime_data.sqlite"
+db = SQLAlchemy(app)
+
+# reflect an existing database into a new model
+Base = automap_base()
+# reflect the tables
+Base.prepare(db.engine, reflect=True)
+
+
+Crime_data = Base.classes.Crime_rate_zip
+
+
+
 app.config['UPLOAD_FOLDER'] = 'Uploads'
 app.config['DATA_FOLDER'] = 'data'
 
@@ -93,29 +113,37 @@ def upload_file():
 def linear(field):
     """process LSD."""
     print('field', field)
-    if field < '4':
-        filename = 'census_crime_data.csv'
-    else:
-        filename = 'census_crime_data_cleaned.csv'
 
-    filename = 'combined_cities_census.csv'        
-    print('in app linear loop#', filename)
 
-############################
-    df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+###djs
+    # filename = 'austin_census_crime_data_cleaned.csv'        
+    #print('in app linear loop#', filename)
+
+###djs DB#########################
+    # if field < '4':
+    #     df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+    # else:
+    #     stmt = db.session.query(Crime_data).statement
+    #     df = pd.read_sql_query(stmt, db.session.bind)
+###
+    stmt = db.session.query(Crime_data).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+
+
+
     print(df)
     if (field == '0' or field == '4' ):
-        X = df['Household Income'].values.reshape(-1, 1)
-        chartName = 'Household Income'
+        X = df['HouseholdIncome'].values.reshape(-1, 1)
+        chartName = 'HouseholdIncome'
     elif (field == '1' or field == '5'):
-        X = df['Median Age'].values.reshape(-1, 1)
-        chartName = 'Median Age'
+        X = df['MedianAge'].values.reshape(-1, 1)
+        chartName = 'MedianAge'
     elif (field == '2' or field == '6'):
-        X = df['Poverty Rate'].values.reshape(-1, 1)
-        chartName = 'Poverty Rate'
+        X = df['PovertyRate'].values.reshape(-1, 1)
+        chartName = 'PovertyRate'
     else:
-        X = df['Per Capita Income'].values.reshape(-1, 1)
-        chartName = 'Per Capita Income'
+        X = df['PerCapitaIncome'].values.reshape(-1, 1)
+        chartName = 'PerCapitaIncome'
     
     y = df['crime_rate'].values.reshape(-1, 1)
 
@@ -169,13 +197,14 @@ def R2():
    
    # filename = 'census_crime_data_cleaned.csv'
     # filename = 'austin_census_crime_data_cleaned.csv'
-    filename = 'combined_cities_census.csv' 
-    print('in app r2', filename)
+#    filename = 'combined_cities_census.csv' 
 
-############################
-    census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+## djs DB  census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
 
-    array = ["Population", "Median Age", "Household Income", "Per Capita Income", "Poverty Count", "Poverty Rate"]
+    stmt = db.session.query(Crime_data).statement
+    census = pd.read_sql_query(stmt, db.session.bind)
+
+    array = ["Population", "MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyCount", "PovertyRate"]
 
     from sklearn.linear_model import LinearRegression
     model = LinearRegression()
@@ -191,7 +220,7 @@ def R2():
         score.append(model.score(X, y))
         
 
-    X = census[["Median Age", "Household Income", "Per Capita Income", "Poverty Rate"]]
+    X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
     y = census["crime_rate"].values.reshape(-1, 1)
 
     # Fitting our model with all of our features in X
@@ -231,10 +260,16 @@ def classifer():
     """process LSD."""
    
     # filename = 'austin_census_crime_data_cleaned.csv'
-    filename = 'combined_cities_census.csv'         
-    print('in app clssifier loop#', filename)
 
-    df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+ ###djs DB  
+    # filename = 'combined_cities_census.csv'         
+    # print('in app clssifier loop#', filename)
+
+    # df = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+    stmt = db.session.query(Crime_data).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+
+
 
     X = df.drop(["crime_rating", "crime_rate", "Population", "PovertyCount"], axis=1)
     y = df["crime_rating"]
@@ -297,10 +332,13 @@ def neural():
     print('in app neural loop#')
 
     # filename = 'census_crime_data_cleaned.csv'        
-    filename = 'combined_cities_census.csv' 
-    print('in app neural loop#', filename)
+    # filename = 'crime and census/combined_cleaned_encode.csv' 
+    # print('in app neural loop#', filename)
 
-    census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+    # census = pd.read_csv(os.path.join(app.config['DATA_FOLDER'], filename))
+
+    stmt = db.session.query(Crime_data).statement
+    census = pd.read_sql_query(stmt, db.session.bind)
 
 
     # max_num = census['crime_rate'].max()
@@ -308,17 +346,17 @@ def neural():
     # print(max_num)
     # print(min_num)
 
-    for index, row in census.iterrows():
-        if(row['crime_rating'] == "High"):
-            blah = 2
-        elif(row['crime_rating'] == 'Medium'):
-            blah = 1
-        else:
-            blah = 0
-        census.at[index, 'encode'] = blah
+    # for index, row in census.iterrows():
+    #     if(row['crime_rating'] == "High"):
+    #         blah = 2
+    #     elif(row['crime_rating'] == 'Medium'):
+    #         blah = 1
+    #     else:
+    #         blah = 0
+    #     census.at[index, 'encode'] = blah
 
-    X = census[["Median Age", "Household Income", "Per Capita Income", "Poverty Rate"]]
-    y = census["encode"].values.reshape(-1, 1)
+    X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
+    y = census["crime_encode"].values.reshape(-1, 1)
     # print(X.shape)
     # print(y.shape)
 
@@ -338,10 +376,10 @@ def neural():
     model = Sequential()
     number_inputs = 4
     number_hidden_nodes = 8
+    number_classes = 3
+
     model.add(Dense(units=number_hidden_nodes,
                     activation='relu', input_dim=number_inputs))
-
-    number_classes = 3
     model.add(Dense(units=number_classes, activation='softmax'))                   
 
     model.compile(optimizer='adam',
