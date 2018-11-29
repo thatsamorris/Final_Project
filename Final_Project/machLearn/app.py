@@ -468,14 +468,15 @@ def SVM():
     print(grid.best_params_)
     print(grid.best_score_)
 
-    X = np.array(data)
-    y = np.array(census["encode"])
+    Xplot = np.array(data)
+    yplot = np.array(census["encode"])
 
     data = {
         "SVM_score": SVMscore, 
         "Best_Grid_Params": grid.best_params_,
-        "Best_Grid_Score": grid.best_score_
-        # "plotX"
+        "Best_Grid_Score": grid.best_score_,
+        "PlotX": Xplot,
+        "PlotY": yplot
     }
     return jsonify(data)
 
