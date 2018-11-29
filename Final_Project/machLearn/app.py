@@ -290,9 +290,6 @@ def classifer():
     print(f"Training Data Score: {classifier.score(X_train, y_train)}")
     print(f"Testing Data Score: {classifier.score(X_test, y_test)}")
 
-    
-   
-    
     training_score = classifier.score(X_train, y_train)
     testing_score = classifier.score(X_test, y_test)
 
@@ -301,6 +298,9 @@ def classifer():
     print(f"First 10 Predictions:   {predictions[:10]}")
     print(f"First 10 Actual labels: {y_test[:10].tolist()}")
 
+    
+    from joblib import dump, load
+    dump(classifier, 'classifier.joblib')
  
   
 ###########################
@@ -402,6 +402,8 @@ def neural():
         X_test_scaled, y_test_categorical, verbose=2)
     print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
 
+    model.save("neural.h5")
+
     ################################################################################
 
    
@@ -471,12 +473,15 @@ def SVM():
     Xplot = np.array(data)
     yplot = np.array(census["encode"])
 
+    print(Xplot)
+    print(yplot)
+
     data = {
         "SVM_score": SVMscore, 
         "Best_Grid_Params": grid.best_params_,
         "Best_Grid_Score": grid.best_score_,
-        "PlotX": Xplot,
-        "PlotY": yplot
+        "PlotX": Xplot.tolist(),
+        "PlotY": yplot.tolist()
     }
     return jsonify(data)
 
@@ -522,6 +527,24 @@ def citystate(field):
     merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
 
     print(merge_table)
+
+    #["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]
+
+    from joblib import dump, load
+    loaded_model = load('classifier.joblib') 
+    # from keras.models import load_model
+    # loaded_model = load_model("neural.h5")
+
+    print("starting for loop")
+    for index,row in merge_table.iterrows():
+        input_data = [row['MedianAge'], row['HouseholdIncome'],\
+            row['PerCapitaIncome'], row['PovertyRate']]
+        input_data = input_data
+        result = loaded_model.predict([input_data])
+        # result = loaded_model.predict(input_data)
+        print(result)
+        merge_table.at[index, 'prediction'] = result
+
     # print(df_test)
 
     ###########################
@@ -534,7 +557,8 @@ def citystate(field):
         "MedianAge": merge_table.MedianAge.tolist(),
         "HouseholdIncome": merge_table.HouseholdIncome.tolist(),
         "PerCapitaIncome": merge_table.PerCapitaIncome.tolist(),
-        "PovertyRate": merge_table.PovertyRate.tolist()
+        "PovertyRate": merge_table.PovertyRate.tolist(),
+        # "Predictions": merge_table.prediction.tolist()
         # "zipcode": zipArry
 
     }

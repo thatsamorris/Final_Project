@@ -510,6 +510,8 @@ function processSVM(i) {
     var title = d3.select("h2");
     title.html("SVM - Score Results")
 
+    var testX = [];
+    var testY = [];
 
     d3.json(`/SVM`).then(function(data) {
         console.log('in processSVM: data ', data); 
@@ -528,7 +530,82 @@ function processSVM(i) {
         row.append("td").text("Best Grid Score");
         row.append("td").text(data.Best_Grid_Score);
 
-    });    
+        var color = [];
+
+        // console.log(data.PlotY);
+
+        for (var l = 0; l < data.PlotY.length; l++){
+            switch (data.PlotY[l]) {
+                case (-1):
+                   color.push("blue");
+                   break;
+                case (0):
+                   color.push("red");
+                   break;
+                case (1):
+                   color.push("yellow");
+                   break;
+            }
+
+        }
+        var class_name = "SVM"
+
+        console.log(data.PlotX);
+        console.log(data.PlotY);
+        console.log(color);
+        trace1 = {
+            type: "scatter",
+            mode: "markers",
+            name: class_name,
+            x: data.PlotX,
+            y: data.PlotY,
+            marker: {
+               color: color,
+               size: 10
+            }
+        };
+
+
+        data1 = [trace1];
+
+        layout = {
+           title: "Crime Rate/" + class_name,
+           xaxis: { title: class_name },
+           yaxis: {title: "Crime Rate"}
+        };
+
+
+        // Plotly.newPlot("graph1", data1, layout); 
+
+    });
+    // var class_name = "SVM"
+
+    // console.log(testX);
+    // console.log(testY);
+
+    // trace1 = {
+    //     type: "scatter",
+    //     mode: "markers",
+    //     name: class_name,
+    //     x: testX,
+    //     y: testY,
+    //     marker: {
+    //        color: color,
+    //        size: 10
+    //     }
+    // };
+
+
+    // data1 = [trace1];
+
+    // layout = {
+    //    title: "Crime Rate/" + class_name,
+    //    xaxis: { title: class_name },
+    //    yaxis: {title: "Crime Rate"}
+    // };
+
+
+    // Plotly.newPlot("graph1", data1, layout);    
 
 }
 
