@@ -400,6 +400,7 @@ function processLinear(i) {
 }
 
 function buildMap(data){
+    console.log(data);
 
     if (map != undefined) { map.remove(); }
 
@@ -422,6 +423,25 @@ function buildMap(data){
 
     lightmap.addTo(map);
 
+    // var num = data.total_results;
+    // console.log(num);
+    // for (i = 0; i < num; i++) { 
+    //     var point = data.zipcode[i];
+    //     // console.log(point.border_polygon);
+    //     var north = point.bounds_north;
+    //     var south = point.bounds_south;
+    //     var east = point.bounds_east;
+    //     var west = point.bounds_west;
+
+    //     var polygon = L.polygon([
+    //         [north, east],
+    //         [south, east],
+    //         [south, west],
+    //         [north, west]
+    //     ]).addTo(map);
+        
+    // }
+
 };
 
 function myFunction(){
@@ -433,7 +453,6 @@ function myFunction(){
     console.log(location);
 
     d3.json(`/citystate/${String(location)}`).then(function(data) {
-        console.log(data.total_results);
         buildMap(data);
     });
 }
@@ -483,6 +502,37 @@ function prediction(){
 }
 
 
+function processSVM(i) {
+
+    clearThings();
+
+    console.log('in processSVM: ');
+    var title = d3.select("h2");
+    title.html("SVM - Score Results")
+
+
+    d3.json(`/SVM`).then(function(data) {
+        console.log('in processSVM: data ', data); 
+
+        var table = d3.select("table");
+        var tbody = table.select("tbody");
+        var row = tbody.append("tr");
+        row.append("td").text("SVM Score");
+        row.append("td").text(data.SVM_score);
+
+        var row = tbody.append("tr");
+        row.append("td").text("Best Grid Parameters(C, gamma)");
+        row.append("td").text(Object.values(data.Best_Grid_Params));
+
+        var row = tbody.append("tr");
+        row.append("td").text("Best Grid Score");
+        row.append("td").text(data.Best_Grid_Score);
+
+    });    
+
+}
+
+
 function optionChanged(model) {
 
     console.log('dis b da file: ', model);
@@ -525,6 +575,9 @@ function optionChanged(model) {
             break;    
         case "Neural":
             processNeural(8);
+            break;
+        case "SVM":
+            processSVM();
             break;
         case "Prediction":
             prediction();
@@ -595,6 +648,10 @@ function init() {
         .append("option")
         .text('Neural Network')
         .property("value", 'Neural');
+    selector
+        .append("option")
+        .text('SVM')
+        .property("value", 'SVM');
     selector
         .append("option")
         .text('Prediction')

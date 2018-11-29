@@ -37,6 +37,7 @@ Base.prepare(db.engine, reflect=True)
 
 
 Crime_data = Base.classes.Crime_rate_zip
+City_zip = Base.classes.census_data1
 
 
 
@@ -412,11 +413,78 @@ def neural():
     
     return jsonify(data)
 
+
+@app.route("/SVM")
+def SVM():
+    stmt = db.session.query(Crime_data).statement
+    census = pd.read_sql_query(stmt, db.session.bind)
+
+    for index, row in census.iterrows():
+        if(row['crime_rating'] == "high"):
+            blah = 1
+        elif(row['crime_rating'] == 'medium'):
+            blah = 0
+        else:
+            blah = -1
+        census.at[index, 'encode'] = blah
+
+    target = census["encode"]
+    target_names = ["Low","Medium", "High"]
+
+    data = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
+
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(data, target, random_state=42)
+
+    from sklearn.preprocessing import StandardScaler
+
+    # Create a StandardScater model and fit it to the training data
+    X_scaler = StandardScaler().fit(X_train)
+    X_train_scaled = X_scaler.transform(X_train)
+    X_test_scaled = X_scaler.transform(X_test)
+
+    from keras.utils import to_categorical
+
+    y_train_categorical = to_categorical(y_train)
+    y_test_categorical = to_categorical(y_test)
+
+    from sklearn.svm import SVC 
+    model = SVC(kernel='linear')
+    model.fit(X_train_scaled, y_train)
+
+    SVMscore = model.score(X_test_scaled, y_test)
+
+    print('Test Acc: %.3f' % SVMscore)
+
+    from sklearn.model_selection import GridSearchCV
+    param_grid = {'C': [1, 5, 10, 50],
+                  'gamma': [0.0001, 0.0005, 0.001, 0.005]}
+    grid = GridSearchCV(model, param_grid, verbose=3)
+
+    grid.fit(X_train_scaled, y_train)
+
+    predictions = grid.predict(X_test_scaled)
+
+    print(grid.best_params_)
+    print(grid.best_score_)
+
+    X = np.array(data)
+    y = np.array(census["encode"])
+
+    data = {
+        "SVM_score": SVMscore, 
+        "Best_Grid_Params": grid.best_params_,
+        "Best_Grid_Score": grid.best_score_
+        # "plotX"
+    }
+    return jsonify(data)
+
+
 @app.route('/citystate/<field>')
 def citystate(field):
 
-    # stmt = db.session.query(City_zip).statement
-    # df_census = pd.read_sql_query(stmt, db.session.bind)
+    stmt = db.session.query(City_zip).statement
+    df_census = pd.read_sql_query(stmt, db.session.bind)
 
     from uszipcode import SearchEngine
     search = SearchEngine(simple_zipcode=True)
@@ -439,29 +507,34 @@ def citystate(field):
     zipArry = []
 
     for x in range(count):
-        zipthing = {}
+        # zipthing = {}
         item = res[x]
-        zipthing['zipcode'] = item.zipcode
-        zipthing['bounds_west'] = item.bounds_west
-        zipthing['bounds_east'] = item.bounds_east
-        zipthing['bounds_north'] = item.bounds_north
-        zipthing['bounds_south'] = item.bounds_south
-        zipArry.append(zipthing)
+        # zipthing['zipcode'] = item.zipcode
+        # zipthing['bounds_west'] = item.bounds_west
+        # zipthing['bounds_east'] = item.bounds_east
+        # zipthing['bounds_north'] = item.bounds_north
+        # zipthing['bounds_south'] = item.bounds_south
+        zipArry.append(item.zipcode)
 
     df_test = pd.DataFrame({'Zipcode': zipArry})
 
-    # merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
+    merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
 
-    # print(merge_table)
-    print(df_test)
+    print(merge_table)
+    # print(df_test)
 
     ###########################
     data = {
+        "total_results": count,
         "latitude": lat,
         "longitude": lng,
         "total_results": count,
-        # "zipcode": merge_table.Zipcode.tolist()
-        "zipcode": zipArry
+        "zipcode": merge_table.Zipcode.tolist(),
+        "MedianAge": merge_table.MedianAge.tolist(),
+        "HouseholdIncome": merge_table.HouseholdIncome.tolist(),
+        "PerCapitaIncome": merge_table.PerCapitaIncome.tolist(),
+        "PovertyRate": merge_table.PovertyRate.tolist()
+        # "zipcode": zipArry
 
     }
 
