@@ -376,7 +376,7 @@ def neural():
     # start Keras modeling
     model = Sequential()
     number_inputs = 4
-    number_hidden_nodes = 8
+    number_hidden_nodes = 100
     number_classes = 3
 
     model.add(Dense(units=number_hidden_nodes,
@@ -415,8 +415,8 @@ def neural():
 @app.route('/citystate/<field>')
 def citystate(field):
 
-    stmt = db.session.query(City_zip).statement
-    df_census = pd.read_sql_query(stmt, db.session.bind)
+    # stmt = db.session.query(City_zip).statement
+    # df_census = pd.read_sql_query(stmt, db.session.bind)
 
     from uszipcode import SearchEngine
     search = SearchEngine(simple_zipcode=True)
@@ -425,6 +425,10 @@ def citystate(field):
     state = field.split('-')[1]
     res = search.by_city_and_state(city,state)
     total = len(res)
+    lat = res[0].lat
+    lng = res[0].lng
+
+    print(lat)
 
     if total < 5:
         count = total
@@ -438,18 +442,23 @@ def citystate(field):
         name = "Zipcode" + str(x)
         print(name)
         print(res[x].zipcode)
-        array.append(res[x].zipcode)
+        zipArry.append(res[x].zipcode)
 
     df_test = pd.DataFrame({'Zipcode': zipArry})
 
-    merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
+    # merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
 
-    print(merge_table)
+    # print(merge_table)
+    print(df_test)
 
     ###########################
     data = {
+        "latitude": lat,
+        "longitude": lng,
         "total_results": count,
-        "zipcode": merge_table.Zipcode.tolist()
+        # "zipcode": merge_table.Zipcode.tolist()
+        "zipcode": zipArry
+
     }
 
     return jsonify(data)

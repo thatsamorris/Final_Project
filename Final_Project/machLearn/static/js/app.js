@@ -34,6 +34,8 @@ function clearNotGraphs() {
     var form = d3.select("form");
     form.html("");
     form.selectAll("*").remove();
+
+    var map = d3.select('#crimemap').html("");
 }
 
 function processAgenda(){
@@ -107,8 +109,6 @@ function processNeural(i) {
     minorlist.append("li").text("Poverty Rate");
     var list_item = list.append("li");
     list_item.text("Testing and Training Scores used 80/20 model");
-    var list_item = list.append("li");
-    list_item.text("Epochs Used: 750");
   
 
     d3.json(`/neural`).then(function(data) {
@@ -399,8 +399,34 @@ function processLinear(i) {
     
 }
 
+function buildMap(lat, lng){
+
+    if (map != undefined) { map.remove(); }
+
+    var map3 = d3.select("#crimemap");
+    map3.html("<div id='map' style='width: 100%; height: 500px;'></div>");
+
+    // Create the tile layer that will be the background of our map
+    var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
+    attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
+    id: "mapbox.light",
+    maxzoom: 15,
+    accessToken: 'pk.eyJ1Ijoia2NtaWxsaWUiLCJhIjoiY2pvNjRobG1zMGd0NjNrcW04b2VxMmU5NyJ9._JbgNG2YppKmyeEcZenRPA'
+    });
+
+    // Create the map object with options
+    var map = L.map("map", {
+    center: [lat, lng],
+    zoom: 10,
+    });
+
+    lightmap.addTo(map);
+
+};
+
 function myFunction(){
     event.preventDefault();
+
     var city = document.getElementById("myForm").elements.namedItem("cityInput").value;
     var state = document.getElementById("myForm").elements.namedItem("stateInput").value;
     var location = city.concat('-', state);
@@ -408,6 +434,7 @@ function myFunction(){
 
     d3.json(`/citystate/${String(location)}`).then(function(data) {
         console.log(data.total_results);
+        buildMap(data.latitude, data.longitude);
     });
 }
 
