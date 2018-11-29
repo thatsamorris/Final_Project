@@ -81,7 +81,7 @@ function processNeural(i) {
 
     console.log('in processNeural: ');
     var title = d3.select("h2");
-    title.html("Neural Network Analysis")
+    title.html("Neural Network - Score Results")
 
     
     var table = d3.select("table");
@@ -97,7 +97,7 @@ function processNeural(i) {
 
     var list = d3.select("ul");
     var list_item = list.append("li");
-    list_item.text("Variable Used as Output For Model: Crime Encode");
+    list_item.text("Variable Used as Output For Model: Crime Encode (0-low, 1-medium, 2-high)");
     var list_item = list.append("li");
     list_item.text("Variables Used as Inputs For Model:");
     var minorlist = list_item.append("ul"); 
@@ -108,7 +108,7 @@ function processNeural(i) {
     var list_item = list.append("li");
     list_item.text("Testing and Training Scores used 80/20 model");
     var list_item = list.append("li");
-    list_item.text("Epochs Used: 1000");
+    list_item.text("Epochs Used: 750");
   
 
     d3.json(`/neural`).then(function(data) {
@@ -131,40 +131,52 @@ function processNeural(i) {
 
 
 function processClassifier(i) {
-
     console.log('in processClassifier: ');
+
+    clearThings();
+
+    console.log('in classifier: ');
+    var title = d3.select("h2");
+    title.html("Logistic Regression - Score Results")
+    var table = d3.select("table");
+    var head = table.select("thead");
+    var row = head.append("tr");
+    row.append("th").text("Field");
+    row.append("th").text("Score");
+
     var tbody = d3.select("tbody");
-    tbody.selectAll("*").remove();
+    // tbody.selectAll("*").remove();
+
+    var list = d3.select("ul");
+    // list.selectAll("*").remove();
+
+    var list_item = list.append("li");
+    list_item.text("Input Variables Used:");
+    var minorlist = list_item.append("ul"); 
+    minorlist.append("li").text("Median Age");
+    minorlist.append("li").text("Houselhold Income");
+    minorlist.append("li").text("Per Capita Income");
+    minorlist.append("li").text("Poverty Rate");
+
+    var list_item = list.append("li");
+    list_item.text("Output is Crime Rating (low, medium high)");
+    var list_item = list.append("li");
+    list_item.text("Testing and Training Scores used 80/20 model");
+
+
   
 
     d3.json(`/classifer`).then(function(data) {
         console.log('in processClassifier: data ', data);
 
-        // for (var l = 0; l < data.fieldArray.length; l++){
-        
-        //     // Append one table row `tr` to the table body
-        //     var row = tbody.append("tr");
-                
-        //     // Append one cell for the student name
-        //     row.append("td").text(data.fieldArray[l]);
-            
-        //     // Append one cell for the student grade
-        //     row.append("td").text(data.field_score[l]);
-        // }   
+        var tbody = table.select("tbody");
+        var row = tbody.append("tr");
+        row.append("td").text("Training Score");
+        row.append("td").text(data.training_score);
 
-        // var row = tbody.append("tr");
-        // row.append("td").text("OverallScore");
-        // row.append("td").text(data.overall_score);
-
-        // var row = tbody.append("tr");
-        // row.append("td").text("TrainingScore");
-        // row.append("td").text(data.training_score);
-
-        // var row = tbody.append("tr");
-        // row.append("td").text("TestingScore");
-        // row.append("td").text(data.testing_score);
-
-
+        var row = tbody.append("tr");
+        row.append("td").text("Testing Score");
+        row.append("td").text(data.testing_score);
 
     });    
 
@@ -178,7 +190,7 @@ function processR2(i) {
 
     console.log('in processR2: ');
     var title = d3.select("h2");
-    title.html("Logistic Regression - Score Analysis")
+    title.html("Linear Regression - Score Results")
     var table = d3.select("table");
     var head = table.select("thead");
     var row = head.append("tr");
@@ -194,7 +206,7 @@ function processR2(i) {
     var list_item = list.append("li");
     list_item.text("All variables were used in initial scores and analysis to see how each variable affects crime rates");
     var list_item = list.append("li");
-    list_item.text("Final Variables Used:");
+    list_item.text("Input Variables Used:");
     var minorlist = list_item.append("ul"); 
     minorlist.append("li").text("Median Age");
     minorlist.append("li").text("Houselhold Income");
@@ -206,7 +218,7 @@ function processR2(i) {
     list_item.text("Testing and Training Scores used 80/20 model");
 
 
-    d3.json(`/R2`).then(function(data) {
+    d3.json(`/linearR2`).then(function(data) {
         console.log('in processR2: data ', data);
 
         for (var l = 0; l < data.fieldArray.length; l++){
@@ -391,7 +403,12 @@ function myFunction(){
     event.preventDefault();
     var city = document.getElementById("myForm").elements.namedItem("cityInput").value;
     var state = document.getElementById("myForm").elements.namedItem("stateInput").value;
-    console.log(city.concat(',', state));
+    var location = city.concat('-', state);
+    console.log(location);
+
+    d3.json(`/citystate/${String(location)}`).then(function(data) {
+        console.log(data.total_results);
+    });
 }
 
 
@@ -541,15 +558,15 @@ function init() {
         .property("value", 'Linear8');
     selector
         .append("option")
-        .text('R2_Scores')
+        .text('Linear Regression')
         .property("value", 'R2_Scores');
     selector
         .append("option")
-        .text('Classifier')
+        .text('Logistic Regression')
         .property("value", 'Classifier');
     selector
         .append("option")
-        .text('Neural')
+        .text('Neural Network')
         .property("value", 'Neural');
     selector
         .append("option")

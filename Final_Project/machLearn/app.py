@@ -191,8 +191,8 @@ def linear(field):
     return jsonify(data)
 
 ##################################
-@app.route("/R2")
-def R2():
+@app.route("/linearR2")
+def linearR2():
     """process LSD."""
    
    # filename = 'census_crime_data_cleaned.csv'
@@ -206,13 +206,13 @@ def R2():
 
     array = ["Population", "MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyCount", "PovertyRate"]
 
-    from sklearn.linear_model import LogisticRegression
-    model = LogisticRegression()
+    from sklearn.linear_model import LinearRegression
+    model = LinearRegression()
 
     score = []
     for variable in array:
         X = census[variable].values.reshape(-1, 1)
-        y = census["crime_rating"].values.reshape(-1, 1)
+        y = census["crime_rate"].values.reshape(-1, 1)
 
     # Fitting our model with all of our features in X
         model.fit(X, y)
@@ -221,7 +221,7 @@ def R2():
         
 
     X = census[["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]]
-    y = census["crime_rating"]
+    y = census["crime_rate"]
 
     # Fitting our model with all of our features in X
     model.fit(X, y)
@@ -391,7 +391,7 @@ def neural():
     model.fit(
         X_train_scaled,
         y_train_categorical,
-        epochs=1000,
+        epochs=750,
         shuffle=True,
         verbose=2
     )
@@ -412,7 +412,47 @@ def neural():
     
     return jsonify(data)
 
+@app.route('/citystate/<field>')
+def citystate(field):
 
+    stmt = db.session.query(City_zip).statement
+    df_census = pd.read_sql_query(stmt, db.session.bind)
+
+    from uszipcode import SearchEngine
+    search = SearchEngine(simple_zipcode=True)
+    print(field)
+    city = field.split('-')[0]
+    state = field.split('-')[1]
+    res = search.by_city_and_state(city,state)
+    total = len(res)
+
+    if total < 5:
+        count = total
+    else:
+        count = 5
+
+    data = {"total_results": count}
+    zipArry = []
+
+    for x in range(count):
+        name = "Zipcode" + str(x)
+        print(name)
+        print(res[x].zipcode)
+        array.append(res[x].zipcode)
+
+    df_test = pd.DataFrame({'Zipcode': zipArry})
+
+    merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
+
+    print(merge_table)
+
+    ###########################
+    data = {
+        "total_results": count,
+        "zipcode": merge_table.Zipcode.tolist()
+    }
+
+    return jsonify(data)
 
 
 @app.route('/favicon.ico')
