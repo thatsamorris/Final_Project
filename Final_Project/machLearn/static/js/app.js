@@ -399,7 +399,7 @@ function processLinear(i) {
     
 }
 
-function buildMap(lat, lng){
+function buildMap(data){
 
     if (map != undefined) { map.remove(); }
 
@@ -416,7 +416,7 @@ function buildMap(lat, lng){
 
     // Create the map object with options
     var map = L.map("map", {
-    center: [lat, lng],
+    center: [data.latitude, data.longitude],
     zoom: 10,
     });
 
@@ -434,7 +434,7 @@ function myFunction(){
 
     d3.json(`/citystate/${String(location)}`).then(function(data) {
         console.log(data.total_results);
-        buildMap(data.latitude, data.longitude);
+        buildMap(data);
     });
 }
 

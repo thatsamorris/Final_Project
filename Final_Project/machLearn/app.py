@@ -439,10 +439,14 @@ def citystate(field):
     zipArry = []
 
     for x in range(count):
-        name = "Zipcode" + str(x)
-        print(name)
-        print(res[x].zipcode)
-        zipArry.append(res[x].zipcode)
+        zipthing = {}
+        item = res[x]
+        zipthing['zipcode'] = item.zipcode
+        zipthing['bounds_west'] = item.bounds_west
+        zipthing['bounds_east'] = item.bounds_east
+        zipthing['bounds_north'] = item.bounds_north
+        zipthing['bounds_south'] = item.bounds_south
+        zipArry.append(zipthing)
 
     df_test = pd.DataFrame({'Zipcode': zipArry})
 
