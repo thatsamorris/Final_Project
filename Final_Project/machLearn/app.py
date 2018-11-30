@@ -507,32 +507,37 @@ def citystate(field):
 
     import random
 
-    if total < 7:
+    if total < 10:
         count =[]
         for x in range(total):
             count.append(int(x))
     else:
-        count = random.sample(range(1, total), 7)
+        count = random.sample(range(1, total), 10)
         # count = 5
 
     print(count)
 
-    data = {"total_results": count}
     zipArry = []
+    ziplat = []
+    ziplng = []
 
     for x in count:
-        # zipthing = {}
+        print(x)
         item = res[x]
-        # zipthing['zipcode'] = item.zipcode
-        # zipthing['bounds_west'] = item.bounds_west
-        # zipthing['bounds_east'] = item.bounds_east
-        # zipthing['bounds_north'] = item.bounds_north
-        # zipthing['bounds_south'] = item.bounds_south
-        zipArry.append(item.zipcode)
+        print(item)
+        if (item.lat == None):
+            continue
+        else:
+            zipArry.append(item.zipcode)
+            ziplat.append(float(item.lat))
+            ziplng.append(float(item.lng))
 
-    df_test = pd.DataFrame({'Zipcode': zipArry})
+    df_test = pd.DataFrame({'Zipcode': zipArry, 'Latitude': ziplat, 'Longitude': ziplng})
 
     merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
+    merge_table = merge_table.dropna()
+    merge_table = merge_table[(merge_table != 0).all(1)]
+    print(merge_table)
 
     #["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]
 
@@ -544,8 +549,8 @@ def citystate(field):
 
     print("starting for loop")
     for index,row in merge_table.iterrows():
-        input_data = [row['MedianAge'], row['HouseholdIncome'],\
-            row['PerCapitaIncome'], row['PovertyRate']]
+        input_data = [float(row['MedianAge']), float(row['HouseholdIncome']),\
+            float(row['PerCapitaIncome']), float(row['PovertyRate'])]
         input_data = input_data
         result = loaded_model.predict([input_data])[0]
         # result = loaded_model.predict(input_data)
@@ -555,10 +560,9 @@ def citystate(field):
 
     ###########################
     data = {
-        "total_results": count,
-        "latitude": lat,
-        "longitude": lng,
-        "total_results": count,
+        "total_results": len(count),
+        "latitude": merge_table.Latitude.tolist(),
+        "longitude": merge_table.Longitude.tolist(),
         "zipcode": merge_table.Zipcode.tolist(),
         "MedianAge": merge_table.MedianAge.tolist(),
         "HouseholdIncome": merge_table.HouseholdIncome.tolist(),

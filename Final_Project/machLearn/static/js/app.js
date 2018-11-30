@@ -420,32 +420,43 @@ function buildMap(data){
     accessToken: 'pk.eyJ1Ijoia2NtaWxsaWUiLCJhIjoiY2pvNjRobG1zMGd0NjNrcW04b2VxMmU5NyJ9._JbgNG2YppKmyeEcZenRPA'
     });
 
+    var lat0 = data.latitude[0];
+    var long0 = data.longitude[0];
+
     // Create the map object with options
     var map = L.map("map", {
-    center: [data.latitude, data.longitude],
-    zoom: 10,
+    center: [lat0, long0] ,
+    zoom: 11,
     });
 
     lightmap.addTo(map);
 
-    // var num = data.total_results;
-    // console.log(num);
-    // for (i = 0; i < num; i++) { 
-    //     var point = data.zipcode[i];
-    //     // console.log(point.border_polygon);
-    //     var north = point.bounds_north;
-    //     var south = point.bounds_south;
-    //     var east = point.bounds_east;
-    //     var west = point.bounds_west;
+    var num = data.total_results;
+    console.log(num);
+    for (i = 0; i < num; i++) { 
+        // var point = data.zipcode[i];
+        pointlat = data.latitude[i];
+        pointlng = data.longitude[i];
+        crime = data.Predictions[i];
+        if (crime == 'high'){
+            shade = 'red';
+        } else if (crime == 'medium'){
+            shade = 'yellow';
+        } else{
+            shade = 'green';
+        }
+        console.log(shade)
 
-    //     var polygon = L.polygon([
-    //         [north, east],
-    //         [south, east],
-    //         [south, west],
-    //         [north, west]
-    //     ]).addTo(map);
+        var circle = L.circle([pointlat, pointlng], {
+            color: shade,
+            fillColor: shade,
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(map);
+
+        circle.bindPopup(data.zipcode[i]);
         
-    // }
+    }
 
 };
 
