@@ -1,13 +1,13 @@
 head {
-    background-color: #3b3a30;
+    background-color: #36486b;
 }
 
 
 body {
     padding: 0;
     margin: 0;
-    background-color: #061f26;
-    color: #d7d2c4;
+    background-color: #36486b;
+    color: #fefbd8;
     font-family: impact;
 
   
@@ -17,13 +17,13 @@ h1 {
     font-size: 75px;
     text-align: center;
     margin-top: 60px;
-    text-shadow: 3px 3px 3px #333;
+    text-shadow: 2px 2px 2px #a19e93;
 }
 
 /*the container must be positioned relative:*/
 .custom-select {
   position: relative;
-  font-family: Arial;
+  font-family: Helvetica;
 }
 /*.custom-select select {
   display: none; to hide original SELECT element:*/
@@ -49,7 +49,7 @@ h1 {
 }
 /*style the items (options), including the selected item:*/
 .select-items div,.select-selected {
-  color: #d7d2c4;
+  color: #fefbd8;
   padding: 8px 16px;
   border: 1px solid transparent;
   border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
@@ -81,7 +81,14 @@ h3 {
   
 }
 
+div {
+    /*border-style: solid;
+    border-color: #bb2031;
+    border-width: 2px;*/
+    text-align: center;
+    vertical-align: center;
 
+}
 #map,
 html {
   height: 100%;
