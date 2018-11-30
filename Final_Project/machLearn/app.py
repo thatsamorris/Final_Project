@@ -497,22 +497,30 @@ def citystate(field):
     print(field)
     city = field.split('-')[0]
     state = field.split('-')[1]
-    res = search.by_city_and_state(city,state)
+    res = search.by_city_and_state(city,state, returns = 30)
     total = len(res)
     lat = res[0].lat
     lng = res[0].lng
 
-    print(lat)
+    # print(lat)
+    print(total)
 
-    if total < 5:
-        count = total
+    import random
+
+    if total < 7:
+        count =[]
+        for x in range(total):
+            count.append(int(x))
     else:
-        count = 5
+        count = random.sample(range(1, total), 7)
+        # count = 5
+
+    print(count)
 
     data = {"total_results": count}
     zipArry = []
 
-    for x in range(count):
+    for x in count:
         # zipthing = {}
         item = res[x]
         # zipthing['zipcode'] = item.zipcode
@@ -526,26 +534,24 @@ def citystate(field):
 
     merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
 
-    print(merge_table)
-
     #["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]
 
     from joblib import dump, load
     loaded_model = load('classifier.joblib') 
     # from keras.models import load_model
     # loaded_model = load_model("neural.h5")
+    merge_table['prediction'] = ""
 
     print("starting for loop")
     for index,row in merge_table.iterrows():
         input_data = [row['MedianAge'], row['HouseholdIncome'],\
             row['PerCapitaIncome'], row['PovertyRate']]
         input_data = input_data
-        result = loaded_model.predict([input_data])
+        result = loaded_model.predict([input_data])[0]
         # result = loaded_model.predict(input_data)
-        print(result)
         merge_table.at[index, 'prediction'] = result
 
-    # print(df_test)
+    print(merge_table)
 
     ###########################
     data = {
@@ -558,7 +564,7 @@ def citystate(field):
         "HouseholdIncome": merge_table.HouseholdIncome.tolist(),
         "PerCapitaIncome": merge_table.PerCapitaIncome.tolist(),
         "PovertyRate": merge_table.PovertyRate.tolist(),
-        # "Predictions": merge_table.prediction.tolist()
+        "Predictions": merge_table.prediction.tolist()
         # "zipcode": zipArry
 
     }

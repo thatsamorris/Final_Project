@@ -42,15 +42,18 @@ function processAgenda(){
     clearThings();
 
     var graph1 = d3.select('#graph1');
-    var list = graph1.append("ul");
 
-    var list_item = list.append("li").text("Team Members: Dave S., Austin M., Carmen R.,\
-        Gwen W.");
-    var list_item = list.append("li").text("Agenda for Today: ");
-    var minor_list = list_item.append("ol");
-    minor_list.append("li").text("Background Information and Steps"); 
-    minor_list.append("li").text("Models Used and Results: Linear Regression"); 
-    minor_list.append("li").text("Prediction Based on Our Best Model "); 
+    var team = graph1.append("span").attr("id", "team")
+        .html("Team Members: Dave S., Austin M., Carmen R., Gwen W. <br>");
+    
+    graph1.append("span").attr("class","agenda")
+        .html("Agenda for Today: <br>");
+    graph1.append("span").attr("class","agenda")
+        .html("1.) Background Information and Steps <br>"); 
+    graph1.append("span").attr("class","agenda")
+        .html("2.) Models Used and Results: Linear Regression <br>"); 
+    graph1.append("span").attr("class","agenda")
+        .html("3.) Prediction Based on Our Best Model "); 
 }
 
 function processBackground(){
