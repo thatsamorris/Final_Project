@@ -4,6 +4,7 @@ function clearThings() {
 
     var graph1 = d3.select('#graph1');
     graph1.selectAll("*").remove();
+    graph1.html("").attr("class", null);
 
     var graph2 = d3.select('#graph2');
     graph2.selectAll("*").remove();
@@ -23,7 +24,7 @@ function clearNotGraphs() {
     var head = table.select("thead");
     head.selectAll("*").remove();
 
-    var tbody = table.select("tbody");
+    var tbody = table.select("tbody").html("");
     tbody.selectAll("*").remove();
 
     var title2 = d3.select(".col-md-4").select("h3").html("");
@@ -60,23 +61,24 @@ function processBackground(){
     clearThings();
 
     var graph1 = d3.select('#graph1');
-    var list = graph1.append("ul");
-    var list_item = list.append("li").text("Cities Used for Analysis: ");
-    var minor_list = list_item.append("ul");
-    minor_list.append("li").text("Atlanta, GA"); 
-    minor_list.append("li").text("Austin, TX"); 
-    minor_list.append("li").text("Baltimore, MD"); 
-    minor_list.append("li").text("Detroit, MI"); 
-    minor_list.append("li").text("Kansas City, MO"); 
-    minor_list.append("li").text("Orlando, FL"); 
-    minor_list.append("li").text("Philadelphia, PA"); 
-    minor_list.append("li").text("Tucson, AZ");
-    var list_item = list.append("li").text("Not all police incident data had zipcode\
-        - most had latitude and logitude - used python library (uszipcode) to get zipcode"); 
-    var list_item = list.append("li").text("After data was cleaned up, it was combined\
-        with census data and then put into database."); 
-    var list_item = list.append("li").text("Models Used: Linear Regression, \
-        Neural Network, and SVM"); 
+    var list = graph1.append("span").html("Cities Used for Analysis: <br>");
+    list.append("span").attr("class","citylist").html("Atlanta, GA<br>"); 
+    list.append("span").attr("class","citylist").html("Austin, TX<br>"); 
+    list.append("span").attr("class","citylist").html("Baltimore, MD<br>"); 
+    list.append("span").attr("class","citylist").html("Detroit, MI<br>"); 
+    list.append("span").attr("class","citylist").html("Kansas City, MO<br>"); 
+    list.append("span").attr("class","citylist").html("Orlando, FL<br>"); 
+    list.append("span").attr("class","citylist").html("Philadelphia, PA<br>"); 
+    list.append("span").attr("class","citylist").html("Tucson, AZ<br>");
+
+    var list_item = graph1.append("span").html("Not all police incident data had zipcode\
+        - most had latitude and logitude - used python library (uszipcode) to get zipcode. <br>"); 
+
+    var list_item = graph1.append("span").html("After data was cleaned up, it was combined\
+        with census data and then put into database. <br>"); 
+
+    var list_item = graph1.append("span").html("Models Used: Linear Regression, Logistic Regression\
+        Neural Network, and SVM <br>"); 
 }
 
 
@@ -254,7 +256,7 @@ function processR2(i) {
 
 function processLinear(i) {
 
-    clearNotGraphs();
+    clearThings();
 
     console.log('in processLinear: ');
     // var filename = 'census_crime_data.csv';
