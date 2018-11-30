@@ -426,7 +426,7 @@ function buildMap(data){
     // Create the map object with options
     var map = L.map("map", {
     center: [lat0, long0] ,
-    zoom: 11,
+    zoom: 10.5,
     });
 
     lightmap.addTo(map);
@@ -498,7 +498,11 @@ function prediction(){
     var nextline = form.append().html("<br>");
 
     var button = nextline.append("input")
-        .attr('type',"submit");
+        .attr('type',"submit")
+        .html("<br>");
+
+    var nextline = form.append().
+        html("<br> Crime Rating: <span style='color: red;'>High</span>, <span style='color: yellow;'>Medium</span>, <span style='color: green;'>Low</span>");
 
     // console.log(myFunction());
 

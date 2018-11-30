@@ -397,6 +397,7 @@ def neural():
         verbose=2
     )
 
+
     # Evaluate the model using the testing data
     model_loss, model_accuracy = model.evaluate(
         X_test_scaled, y_test_categorical, verbose=2)
@@ -492,6 +493,7 @@ def citystate(field):
     stmt = db.session.query(City_zip).statement
     df_census = pd.read_sql_query(stmt, db.session.bind)
 
+    from keras.models import load_model
     from uszipcode import SearchEngine
     search = SearchEngine(simple_zipcode=True)
     print(field)
@@ -507,7 +509,7 @@ def citystate(field):
 
     import random
 
-    if total < 10:
+    if total <= 10:
         count =[]
         for x in range(total):
             count.append(int(x))
@@ -535,26 +537,42 @@ def citystate(field):
     df_test = pd.DataFrame({'Zipcode': zipArry, 'Latitude': ziplat, 'Longitude': ziplng})
 
     merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
-    merge_table = merge_table.dropna()
     merge_table = merge_table[(merge_table != 0).all(1)]
+    merge_table = merge_table[(merge_table != '').all(1)]
+    merge_table = merge_table.dropna()
+    
     print(merge_table)
 
     #["MedianAge", "HouseholdIncome", "PerCapitaIncome", "PovertyRate"]
 
     from joblib import dump, load
     loaded_model = load('classifier.joblib') 
-    # from keras.models import load_model
+
+    # print("loading neural model")
     # loaded_model = load_model("neural.h5")
+    # print("model loaded")
     merge_table['prediction'] = ""
 
     print("starting for loop")
     for index,row in merge_table.iterrows():
+        #for logistic regression
         input_data = [float(row['MedianAge']), float(row['HouseholdIncome']),\
             float(row['PerCapitaIncome']), float(row['PovertyRate'])]
-        input_data = input_data
+        #for neural network
+        a = np.array([input_data])
+        print(a)
+        # for logistic regression
         result = loaded_model.predict([input_data])[0]
-        # result = loaded_model.predict(input_data)
         merge_table.at[index, 'prediction'] = result
+        # for neural network model
+        # result = loaded_model.predict_classes(a)
+        # if result[0] == 2:
+        #     final = 'high'
+        # elif result[0] == 1:
+        #     final = 'medium'
+        # else:
+        #     final = 'low'
+        # merge_table.at[index, 'prediction'] = final
 
     print(merge_table)
 
