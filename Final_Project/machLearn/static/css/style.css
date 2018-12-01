@@ -24,13 +24,13 @@ h1 {
 .custom-select {
   position: relative;
   font-family: Helvetica;
-  background-color: #bb2031;
+  background-color: orange;
 }
 /*.custom-select select {
   display: none; to hide original SELECT element:*/
 }
 .select-selected {
-  background-color: #FF4455;
+  background-color: orange;
 }
 /*style the arrow inside the select element:*/
 .select-selected:after {
@@ -59,7 +59,7 @@ h1 {
 /*style items (options):*/
 .select-items {
   position: absolute;
-  background-color: #bb2031;
+  background-color: orange;
   top: 100%;
   left: 0;
   right: 0;
@@ -116,3 +116,18 @@ html {
   font-size: 20px;
 }
 
+.crime{
+  position: fixed;
+  bottom:0;
+  center:0;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  opacity:0.2;
+  repeat:repeat-x;
+  border: px solid orange;
+}
+
+.stoplight{
+  position: center;
+  font-size: 35px;
+}
