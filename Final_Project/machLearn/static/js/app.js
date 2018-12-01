@@ -55,6 +55,9 @@ function processAgenda(){
         .html("2.) Models Used and Results<br>"); 
     graph1.append("span").attr("class","agenda")
         .html("3.) Prediction Based on One of the Models "); 
+
+    var graph2 = d3.select('#graph2')
+    graph2.append("img").attr("src", '../static/crime_tape.jpg');
 }
 
 function processBackground(){
@@ -93,6 +96,10 @@ function processBackground(){
 
     var list_item = graph1.append("span").attr('class','background').html("Models Used: Linear Regression, Logistic Regression\
         Neural Network, and SVM <br>"); 
+
+    var graph2 = d3.select('#graph2')
+    graph2.append("img").attr("src", '../static/crime_tape.jpg');
+
 }
 
 
