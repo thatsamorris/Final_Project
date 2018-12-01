@@ -57,7 +57,7 @@ function processAgenda(){
         .html("3.) Prediction Based on One of the Models "); 
 
     var graph2 = d3.select('#graph2')
-    graph2.append("img").attr("src", '../static/crime_tape.jpg');
+    graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
 }
 
 function processBackground(){
@@ -98,7 +98,7 @@ function processBackground(){
         Neural Network, and SVM <br>"); 
 
     var graph2 = d3.select('#graph2')
-    graph2.append("img").attr("src", '../static/crime_tape.jpg');
+    graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
 
 }
 
