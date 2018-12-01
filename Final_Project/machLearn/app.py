@@ -514,7 +514,7 @@ def citystate(field):
         for x in range(total):
             count.append(int(x))
     else:
-        count = random.sample(range(1, total), 10)
+        count = random.sample(range(0, total), (total-1))
         # count = 5
 
     print(count)

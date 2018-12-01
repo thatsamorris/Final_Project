@@ -71,13 +71,27 @@ function processBackground(){
     list.append("span").attr("class","citylist").html("Philadelphia, PA<br>"); 
     list.append("span").attr("class","citylist").html("Tucson, AZ<br>");
 
-    var list_item = graph1.append("span").html("Not all police incident data had zipcode\
+    var list_item = graph1.append("span").attr('class','background').html("Not all police incident data had zipcode\
         - most had latitude and logitude - used python library (uszipcode) to get zipcode. <br>"); 
 
-    var list_item = graph1.append("span").html("After data was cleaned up, it was combined\
+    var list_item = graph1.append("span").attr('class','background').html("We went through each city individually\
+        - calculated crime rate (total crime per zipcode / population of zipcode ) - evenly distribute datapoints between\
+        low,medium and high <br>"); 
+
+    var list_item = graph1.append("span").attr('class','background').html("Some cities data used was only from 2017.\
+        While other cities had data that went back to 2010 <br>"); 
+
+    var list_item = graph1.append("span").attr('class','background').html("We then went through the data and removed \
+        outliers.  Some zipcodes had low population with a high reporting of incidents which could skew results.  Some data\
+        didn't make sense because the location information was not recorded correctly. <br>"); 
+
+    var list_item = graph1.append("span").attr('class','background').html("Census was take 9 years ago, which doesn't reflect\
+        changes in population since then.<br>");    
+
+    var list_item = graph1.append("span").attr('class','background').html("After data was cleaned up, it was combined\
         with census data and then put into database. <br>"); 
 
-    var list_item = graph1.append("span").html("Models Used: Linear Regression, Logistic Regression\
+    var list_item = graph1.append("span").attr('class','background').html("Models Used: Linear Regression, Logistic Regression\
         Neural Network, and SVM <br>"); 
 }
 
@@ -441,7 +455,7 @@ function buildMap(data){
         if (crime == 'high'){
             shade = 'red';
         } else if (crime == 'medium'){
-            shade = 'yellow';
+            shade = 'orange';
         } else{
             shade = 'green';
         }
@@ -502,7 +516,9 @@ function prediction(){
         .html("<br>");
 
     var nextline = form.append().
-        html("<br> Crime Rating: <span style='color: red;'>High</span>, <span style='color: yellow;'>Medium</span>, <span style='color: green;'>Low</span>");
+        html("<br> Crime Rating: <span class='stoplight' style='color: red;'>High</span>,\
+            <span class='stoplight' style='color: orange;'>Medium</span>, <span class='stoplight'\
+            style='color: green;'>Low</span>");
 
     // console.log(myFunction());
 

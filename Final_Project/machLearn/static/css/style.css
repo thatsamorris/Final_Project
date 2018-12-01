@@ -24,12 +24,13 @@ h1 {
 .custom-select {
   position: relative;
   font-family: Helvetica;
+  background-color: #bb2031;
 }
 /*.custom-select select {
   display: none; to hide original SELECT element:*/
 }
 .select-selected {
-  background-color: #bb2031;
+  background-color: #FF4455;
 }
 /*style the arrow inside the select element:*/
 .select-selected:after {
@@ -86,6 +87,7 @@ div {
     border-color: #bb2031;
     border-width: 2px;*/
     text-align: center;
+    margin-top: 30px;
     vertical-align: center;
 
 }
@@ -95,4 +97,20 @@ html {
   
 }
 
+#team{
+  /*color: #fefbd8;*/
+  font-size: 40px;
+}
+
+.agenda{
+  font-size: 30px;
+}
+
+.citylist{
+  font-size: 25px;
+}
+
+.background{
+  font-size: 20px;
+}
 
