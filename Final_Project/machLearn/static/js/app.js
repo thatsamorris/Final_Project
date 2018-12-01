@@ -52,9 +52,9 @@ function processAgenda(){
     graph1.append("span").attr("class","agenda")
         .html("1.) Background Information and Steps <br>"); 
     graph1.append("span").attr("class","agenda")
-        .html("2.) Models Used and Results: Linear Regression <br>"); 
+        .html("2.) Models Used and Results<br>"); 
     graph1.append("span").attr("class","agenda")
-        .html("3.) Prediction Based on Our Best Model "); 
+        .html("3.) Prediction Based on One of the Models "); 
 }
 
 function processBackground(){
@@ -102,7 +102,7 @@ function processNeural(i) {
 
     console.log('in processNeural: ');
     var title = d3.select("h2");
-    title.html("Neural Network - Score Results")
+    title.html("Deep Learning w/ Neural Network - Score")
 
     
     var table = d3.select("table");
@@ -127,8 +127,9 @@ function processNeural(i) {
     minorlist.append("li").text("Per Capita Income");
     minorlist.append("li").text("Poverty Rate");
     var list_item = list.append("li");
-    list_item.text("Testing and Training Scores used 80/20 model");
-  
+    list_item.text("Model was created with 4 inputs, 100 hidden nodes, and 1 outputs");
+    var list_item = list.append("li");
+    list_item.text("Model was compiled with 'adam' as the optimizer and 'mean_squared_error' for the loss");
 
     d3.json(`/neural`).then(function(data) {
         console.log('in processNeural: data ', data); 
@@ -170,7 +171,7 @@ function processClassifier(i) {
     // list.selectAll("*").remove();
 
     var list_item = list.append("li");
-    list_item.text("Input Variables Used:");
+    list_item.text("Input Variables Used for Model:");
     var minorlist = list_item.append("ul"); 
     minorlist.append("li").text("Median Age");
     minorlist.append("li").text("Houselhold Income");
@@ -178,9 +179,7 @@ function processClassifier(i) {
     minorlist.append("li").text("Poverty Rate");
 
     var list_item = list.append("li");
-    list_item.text("Output is Crime Rating (low, medium high)");
-    var list_item = list.append("li");
-    list_item.text("Testing and Training Scores used 80/20 model");
+    list_item.text("Output Variable is Crime Rating (low, medium, high)");
 
 
   
@@ -223,18 +222,21 @@ function processR2(i) {
     // list.selectAll("*").remove();
 
     var list_item = list.append("li");
-    list_item.text("All variables were used in initial scores and analysis to see how each variable affects crime rates");
+    list_item.text("Scores were tabulated for each variable individually relative to \
+        crime rate.");
     var list_item = list.append("li");
-    list_item.text("Input Variables Used:");
+    list_item.text("Input Variables Used in Final Model:");
     var minorlist = list_item.append("ul"); 
     minorlist.append("li").text("Median Age");
     minorlist.append("li").text("Houselhold Income");
     minorlist.append("li").text("Per Capita Income");
     minorlist.append("li").text("Poverty Rate");
     var list_item = list.append("li");
-    list_item.text("Overall score uses all data with 4 variables listed");
+    list_item.text("Output Variable Used in Model: Crime Rating");
     var list_item = list.append("li");
-    list_item.text("Testing and Training Scores used 80/20 model");
+    list_item.text("Overall score is for the final model with 4 inputs and 1 output");
+    var list_item = list.append("li");
+    list_item.text("Testing and Training Scores are for the final model");
 
 
     d3.json(`/linearR2`).then(function(data) {
@@ -440,7 +442,7 @@ function buildMap(data){
     // Create the map object with options
     var map = L.map("map", {
     center: [lat0, long0] ,
-    zoom: 10.5,
+    zoom: 10,
     });
 
     lightmap.addTo(map);
