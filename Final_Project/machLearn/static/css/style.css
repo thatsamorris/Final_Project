@@ -11,14 +11,50 @@ body {
     font-family: arial;
 
   
+h1{
+  font-size: 75px;
+  text-align: center;
+  margin-top: 60px;
+  text-shadow: 2px 2px 2px #a19e93;
+  background: url('https://benlib.org/wp-content/uploads/2016/02/crime-scene-tape.jpg');
+  position: relative;
+  display: inline-block;
+  margin:25px;
+  padding:0 10px;
+  height:150px;
+  width: 100%;
+  opacity:0.3;
 }
+/*
+h1:before,h1:after {
+  content:'';
+  display: inline-block;
+  position:absolute;
+  top: 0;
+  right: -20px;
+  width: 20px;
+  height: 100%;
+  background:inherit;
+  background-position:100% 100%;
+}
+h1:before {
+  left:-20px;
+  background-position: 0 100%;
+}
+*/
 
-h1 {
-    font-size: 75px;
-    text-align: center;
-    margin-top: 60px;
-    text-shadow: 2px 2px 2px #a19e93;
+/*title {
+  background: ('../static/crime_tape.jpg');
+  h1{
+    background: url('http://i49.tinypic.com/2zs1z79.png') 0 0 repeat-x;
+    position:relative;
+    display: inline-block;
+    margin:0 25px;
+    padding:0 10px;
+    height:40px;
+    opacity:0.2;
 }
+*/
 
 /*the container must be positioned relative:*/
 .custom-select {
@@ -74,8 +110,10 @@ h1 {
 }
 
 
-h2 {
-  
+h2  { text-align: center;
+  margin: 15px;
+  2px 2px 2px #a19e93;
+  font-weight: bold;
 }
 
 h3 {
@@ -86,9 +124,9 @@ div {
     /*border-style: solid;
     border-color: #bb2031;
     border-width: 2px;*/
-    text-align: justify;
-    margin-top: 30px;
-    vertical-align: center;
+   /* text-align: justify;*/
+   /* margin-top: 30px;
+    vertical-align: center;*/
 
 }
 #map,
@@ -109,6 +147,7 @@ html {
 }
 
 .citylist{
+  column-count: 4;
   font-size: 25px;
 }
 
@@ -116,7 +155,7 @@ html {
   font-size: 20px;
 }
 
-.crime{
+/*.crime{
   position: fixed;
   bottom:0;
   center:0;
@@ -125,7 +164,7 @@ html {
   opacity:0.2;
   repeat:repeat-x;
   border: px solid orange;
-}
+}*/
 
 .stoplight{
   position: center;
