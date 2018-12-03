@@ -536,6 +536,8 @@ def citystate(field):
 
     df_test = pd.DataFrame({'Zipcode': zipArry, 'Latitude': ziplat, 'Longitude': ziplng})
 
+    print(df_test)
+
     merge_table = pd.merge(df_census, df_test, on="Zipcode", how='inner')
     merge_table = merge_table[(merge_table != 0).all(1)]
     merge_table = merge_table[(merge_table != '').all(1)]
