@@ -63,42 +63,34 @@ function processAgenda(){
 function processBackground(){
     clearThings();
 
+    
     var graph1 = d3.select('#graph1');
-    var list = graph1.append("span").html("Cities Used for Analysis: <br>");
-    list.append("span").attr("class","citylist").html("Atlanta, GA<br>"); 
-    list.append("span").attr("class","citylist").html("Austin, TX<br>"); 
-    list.append("span").attr("class","citylist").html("Baltimore, MD<br>"); 
-    list.append("span").attr("class","citylist").html("Detroit, MI<br>"); 
-    list.append("span").attr("class","citylist").html("Kansas City, MO<br>"); 
-    list.append("span").attr("class","citylist").html("Orlando, FL<br>"); 
-    list.append("span").attr("class","citylist").html("Philadelphia, PA<br>"); 
-    list.append("span").attr("class","citylist").html("Tucson, AZ<br>");
+    var section1 = graph1.append("div").attr("class", "col-md-6");
+    var section1_header = section1.append('h2').text('Project Execution');
+    var list_item = section1.append("span").attr('class','background').html("-The Python Library USZipcode was utilized \
+    to convert police incidents recorded with latitude and longitude into zipcodes. <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("Not all police incident data had zipcode\
-        - most had latitude and logitude - used python library (uszipcode) to get zipcode. <br>"); 
+    var list_item = section1.append("span").attr('class','background').html("-After the data was cleaned, it was combined\
+        with the census data and put into database. <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("We went through each city individually\
-        - calculated crime rate (total crime per zipcode / population of zipcode ) - evenly distribute datapoints between\
-        low,medium and high <br>"); 
+    var list_item = section1.append("span").attr('class','background').html("-We went through cities \
+        and calculated the crime rate. Then datapoints were then evenly distrubuted between\
+        low - medium - high <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("Some cities data used was only from 2017.\
-        While other cities had data that went back to 2010 <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("We then went through the data and removed \
-        outliers.  Some zipcodes had low population with a high reporting of incidents which could skew results.  Some data\
-        didn't make sense because the location information was not recorded correctly. <br>"); 
+        var section2 = graph1.append("div").attr("class", "col-md-6");
+        var section2_header = section2.append('h2').text('Managed Problems');
+    var list_item = section2.append("span").attr('class','background').html("-Some cities only had more recent data and records \
+        did not go further than 2017. While other cities had data as far back as 2010. <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("Census was take 9 years ago, which doesn't reflect\
-        changes in population since then.<br>");    
+    var list_item = section2.append("span").attr('class','background').html("The census was taken 2010 years ago, which doesn't reflect \
+        changes in population over the last 8/9 years.<br>");    
 
-    var list_item = graph1.append("span").attr('class','background').html("After data was cleaned up, it was combined\
-        with census data and then put into database. <br>"); 
+    var list_item = section2.append("span").attr('class','background').html("-Some data, such as latitude and longitude was \
+    not put into the initial reports properly. <br>"); 
 
-    var list_item = graph1.append("span").attr('class','background').html("Models Used: Linear Regression, Logistic Regression\
-        Neural Network, and SVM <br>"); 
-
-    var graph2 = d3.select('#graph2')
-    graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
+  //  var graph2 = d3.select('#graph2')
+  //  graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
 
 }
 
