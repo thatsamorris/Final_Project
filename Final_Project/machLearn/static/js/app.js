@@ -71,7 +71,7 @@ function buildSimpleSVG(){
 
     svg.attr("width", "100%").attr("height", "200px");
 
-    var x = 137.5
+    var x = 125
     var xValues = [x, 2*x, 3*x, 4*x, 5*x, 6*x, 7*x, 8*x];
     var yValues = randomDataSet(8,20,150);
     var names = ['Atlanta', 'Austin', 'Baltimore',
@@ -160,6 +160,8 @@ function processBackground(){
 
     var list_item = section2.append("span").attr('class','background').html("-Some data, such as latitude and longitude were \
     not put into the initial reports properly. <br>"); 
+
+    // document.getElementById("myButton").onclick = prediction();
 
   //  var graph2 = d3.select('#graph2')
   //  graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
