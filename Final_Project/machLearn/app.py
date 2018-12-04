@@ -285,22 +285,36 @@ def classifer():
     classifier = LogisticRegression()
     #classifier
 
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.decomposition import PCA
+    from sklearn.svm import SVC
+    pipe_lr = Pipeline([('scl', StandardScaler(copy=True, with_mean=True, with_std=True)),
+                    ('pca', PCA(copy=True, iterated_power='auto', n_components=4, random_state=None,
+                    svd_solver='auto', tol=0.0, whiten=False)),
+                    ('clf', SVC(C=0.8999999999999999, cache_size=200, class_weight=None, coef0=0.0,
+                    decision_function_shape='ovr', degree=3, gamma='auto_deprecated',
+                    kernel='rbf', max_iter=-1, probability=False, random_state=None,
+                    shrinking=True, tol=0.001, verbose=False))])
+
+    pipe_lr.fit(X_train, y_train)
+
     classifier.fit(X_train, y_train)
 
-    print(f"Training Data Score: {classifier.score(X_train, y_train)}")
-    print(f"Testing Data Score: {classifier.score(X_test, y_test)}")
+    print(f"Training Data Score: {pipe_lr.score(X_train, y_train)}")
+    print(f"Testing Data Score: {pipe_lr.score(X_test, y_test)}")
 
-    training_score = classifier.score(X_train, y_train)
-    testing_score = classifier.score(X_test, y_test)
+    training_score = pipe_lr.score(X_train, y_train)
+    testing_score = pipe_lr.score(X_test, y_test)
 
-    predictions = classifier.predict(X_test)
+    predictions = pipe_lr.predict(X_test)
 
     print(f"First 10 Predictions:   {predictions[:10]}")
     print(f"First 10 Actual labels: {y_test[:10].tolist()}")
 
     
     from joblib import dump, load
-    dump(classifier, 'classifier.joblib')
+    dump(pipe_lr, 'classifier.joblib')
  
   
 ###########################

@@ -229,7 +229,7 @@ function processClassifier(i) {
 
     console.log('in classifier: ');
     var title = d3.select("h2");
-    title.html("Logistic Regression - Score Results")
+    title.html("Pipeline Model")
     var table = d3.select("table");
     var head = table.select("thead");
     var row = head.append("tr");
@@ -243,6 +243,11 @@ function processClassifier(i) {
     // list.selectAll("*").remove();
 
     var list_item = list.append("li");
+    list_item.text("Pipeline model built with Standard Scalar (helps to normalize numerical features), \
+            PCA (Principal Component Analysis - statistical procedure), SVC (Support Vector Classification -\
+            supervised learning model)");
+
+    var list_item = list.append("li");
     list_item.text("Input Variables Used for Model:");
     var minorlist = list_item.append("ul"); 
     minorlist.append("li").text("Median Age");
@@ -252,9 +257,6 @@ function processClassifier(i) {
 
     var list_item = list.append("li");
     list_item.text("Output Variable is Crime Rating (low, medium, high)");
-
-
-  
 
     d3.json(`/classifer`).then(function(data) {
         console.log('in processClassifier: data ', data);
