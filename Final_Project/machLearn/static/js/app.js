@@ -60,83 +60,10 @@ function processAgenda(){
     graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
 }
 
-function randomDataSet(dataSetSize, minValue, maxValue) {
-  return new Array(dataSetSize).fill(0).map(function(n) {
-    return Math.random() * (maxValue - minValue) + minValue;
-  });
-}
-
-function buildSimpleSVG(){
-    var svg = d3.select("#graph2").append("svg");
-
-    svg.attr("width", "100%").attr("height", "200px");
-
-    var x = 137.5
-    var xValues = [x, 2*x, 3*x, 4*x, 5*x, 6*x, 7*x, 8*x];
-    var yValues = randomDataSet(8,20,150);
-    var names = ['Atlanta', 'Austin', 'Baltimore',
-        'Detroit','Kansas City','Orlando', 'Philadelphia',
-        'Tucson'];
-    var state = ['GA','TX','MD','MI','MO','FL','PA','AZ'];
-    var clr = ['red', 'yellow','orange','green','purple','white','gray','pink']
-    
-    var data = [];
-    for (i = 0; i < 8; i++) { 
-        var item = {};
-        item['x_axis'] = xValues[i];
-        item['y_axis'] = 100;
-        item['name'] = names[i];
-        item['shape'] = state[i];
-        item['clr'] = 'gray';
-        data.push(item)
-    }
-
-    console.log(data)
-
-    var circles = svg.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle");
-
-    var circleAttributes = circles
-        .attr("r", 35)
-        .attr("cy", function(d) {return d.y_axis;})
-        .attr("cx", function(d) {return d.x_axis;})
-        .attr("fill", function(d) {return d.clr;});
-
-    var text = svg.selectAll("text")
-        .data(data)
-        .enter()
-        .append("text");
-
-    var textAttributes = text
-        .text(function(d) { return d.name; })
-        .attr("y", function(d) {return d.y_axis-45;})
-        .attr("x", function(d) {return d.x_axis-25;})
-        .attr("fill", "white")
-        .attr("font-size",15);
-
-    var foreign = svg.selectAll("foreignObject")
-        .data(data)
-        .enter()
-        .append("foreignObject");
-
-    var foreignAttributes = foreign
-        .attr("y", function(d) {return d.y_axis-20;})
-        .attr("x", function(d) {return d.x_axis-25;})
-        .attr("class", "stateShape")
-        .html(function(d) {
-            var blah = (`${d.shape}`).toLowerCase();
-            return (`<i class="mg map-us-${blah} mg-3x"></i>`);
-        });
-
-    
-}
-
 function processBackground(){
     clearThings();
-    buildSimpleSVG();
 
+    
     var graph1 = d3.select('#graph1');
     var section1 = graph1.append("div").attr("class", "col-md-6");
     var section1_header = section1.append('h2').text('Project Execution');
@@ -150,10 +77,11 @@ function processBackground(){
         and calculated the crime rate. Then datapoints were then evenly distrubuted between\
         low - medium - high <br>"); 
 
+
         var section2 = graph1.append("div").attr("class", "col-md-6");
         var section2_header = section2.append('h2').text('Managed Problems');
     var list_item = section2.append("span").attr('class','background').html("-Some cities only had more recent data and records \
-        did not go further than 2017. While other cities had data as far back as 2010. <br>");  
+        did not go further than 2017. While other cities had data as far back as 2010. <br>"); 
 
     var list_item = section2.append("span").attr('class','background').html("The census was taken 2010 years ago, which doesn't reflect \
         changes in population over the last 8/9 years.<br>");    
@@ -163,6 +91,7 @@ function processBackground(){
 
   //  var graph2 = d3.select('#graph2')
   //  graph2.append("img").attr("class","crime").attr("src", '../static/crime_tape.jpg');
+
 }
 
 
@@ -496,7 +425,7 @@ function buildMap(data){
     if (map != undefined) { map.remove(); }
 
     var map3 = d3.select("#crimemap");
-    map3.html("<div id='map' style='width: 100%; height: 400px;'></div>");
+    map3.html("<div id='map' style='width: 100%; height: 500px;'></div>");
 
     // Create the tile layer that will be the background of our map
     var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
@@ -518,74 +447,33 @@ function buildMap(data){
     lightmap.addTo(map);
 
     var num = data.total_results;
-    var highCount = 0;
-    var medCount = 0;
-    var lowCount = 0;
     console.log(num);
     for (i = 0; i < num; i++) { 
         // var point = data.zipcode[i];
         pointlat = data.latitude[i];
         pointlng = data.longitude[i];
-
-        if (typeof(pointlat) != "undefined"){
-            crime = data.Predictions[i];
-            if (crime == 'high'){
-                highCount = highCount + 1;
-                shade = 'red';
-            } else if (crime == 'medium'){
-                shade = 'orange';
-                medCount = medCount + 1;
-            } else{
-                shade = 'green';
-                lowCount = lowCount + 1;
-            }
-            console.log(shade)
-
-            var circle = L.circle([pointlat, pointlng], {
-                color: shade,
-                fillColor: shade,
-                fillOpacity: 0.5,
-                radius: 500
-            }).addTo(map);
-
-            circle.bindPopup(data.zipcode[i]);
+        crime = data.Predictions[i];
+        if (crime == 'high'){
+            shade = 'red';
+        } else if (crime == 'medium'){
+            shade = 'orange';
+        } else{
+            shade = 'green';
         }
-        else{ console.log("undefined found!!")}
+        console.log(shade)
+
+        var circle = L.circle([pointlat, pointlng], {
+            color: shade,
+            fillColor: shade,
+            fillOpacity: 0.5,
+            radius: 500
+        }).addTo(map);
+
+        circle.bindPopup(data.zipcode[i]);
         
     }
-
-    var legend = L.control({position: 'bottomright'});
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-        
-        categories = ['high','medium','low'];
-
-        for (var i = 0; i < categories.length; i++) {
-            div.innerHTML +=
-                '<i style="background:' + getColor(categories[i]) + '"></i> ' +
-                 (categories[i] ? categories[i] + '<br>' : '+');
-    }
-
-    return div;
-    }
-    console.log(legend)
-    legend.addTo(map);
-
-    var title = d3.select('h2').text('Results');
-
-    var summary = d3.select('ul').html("");
-    var word = ['High: ','Medium: ','Low: ']
-    summary.append('li').attr("class", "predict_results").text(word[0].concat(highCount.toString()));
-    summary.append('li').attr("class", "predict_results").text(word[1].concat(medCount.toString()));
-    summary.append('li').attr("class", "predict_results").text(word[2].concat(lowCount.toString()));
 
 };
-
-function getColor(category) {
-    return (category == 'low') ? 'green' :
-           (category == 'medium')  ? 'orange' :
-           'red';
-}
 
 function myFunction(){
     event.preventDefault();
@@ -613,28 +501,25 @@ function prediction(){
     form.html("<br> Input a City: <br>");
     
     var input = form.append("input")
-        .attr("class", "inputform")
         .attr('type','text')
         .attr('name','cityInput');
 
     var nextline = form.append().html("<br>Input a State:<br>");
 
     var input2 = nextline.append("input")
-        .attr("class", "inputform")
         .attr('type','text')
         .attr('name','stateInput');
 
-    var nextline = form.append().html("<br><br>");
+    var nextline = form.append().html("<br>");
 
     var button = nextline.append("input")
         .attr('type',"submit")
         .html("<br>");
 
-    // var nextline = form.append().
-    //     html("<br> <span class='stoplight'>Crime Rating: </span>\
-    //         <span class='stoplight' style='color: red;'>High</span>,\
-    //         <span class='stoplight' style='color: orange;'>Medium</span>,\
-    //         <span class='stoplight'style='color: green;'>Low</span>");
+    var nextline = form.append().
+        html("<br> Crime Rating: <span class='stoplight' style='color: red;'>High</span>,\
+            <span class='stoplight' style='color: orange;'>Medium</span>, <span class='stoplight'\
+            style='color: green;'>Low</span>");
 
     // console.log(myFunction());
 
